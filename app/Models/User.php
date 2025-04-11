@@ -40,7 +40,7 @@ use HasRoles;
         'password',
         'remember_token',
     ];
-    public function Direction(){
+    public function direction(){
 
         return $this->belongsTo(Direction::class,"direction", "code");
 

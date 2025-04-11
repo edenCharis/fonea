@@ -79,8 +79,11 @@
     >
     <div class="input-group-append">
       <div class="input-group-text">
-        <span class="fas fa-lock"></span>
+       
       </div>
+      <div class="input-group-text">
+      <span class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></span>
+    </div>
     </div>
   
   </div>
@@ -116,5 +119,21 @@
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    togglePassword.addEventListener('click', function () {
+      // Toggle password visibility
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+
+      // Toggle the eye icon
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    });
+  });
+</script>
 </body>
 </html>

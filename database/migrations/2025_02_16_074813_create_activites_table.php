@@ -17,7 +17,7 @@ return new class extends Migration
             $table->String("type_compte");
             $table->double("mtb");
             $table->foreignId("direction_id")->constrained('direction')->onDelete('cascade')->nullable();
-            $table->foreignId("annee_id")->constrained('annees')->onDelete('cascade')->nullable();
+            $table->foreignId("annee_id")->constrained('annee')->onDelete('cascade')->nullable();
             $table->foreignId("user_id")->constrained("users")->onDelete("cascade");
 
         });
