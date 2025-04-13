@@ -85,6 +85,8 @@ Route::middleware("auth")->group(function () {
  
 
   Route::resource('activites', activitesController::class)->middleware(CheckDirection::class.':DCB');
+  Route::resource('journal_activite', journalactivitesController::class)->middleware(CheckDirection::class.':DCB');
+
 
 
 });
@@ -112,5 +114,5 @@ Route::middleware("auth")->group(function () {
     Route::get('controle', [controleController::class,'index'])->name("controle")->middleware(CheckDirection::class.':DCB');
     Route::get('editer', [controleController::class,'editer'])->name("editer")->middleware(CheckDirection::class.':DCB');
     Route::get('activite', [controleController::class,'activite'])->name("activite")->middleware(CheckDirection::class.':DCB');
- 
+   
   });

@@ -8,7 +8,7 @@ class formationContinue extends Model
 {
     //
 
-    protected $fillable = ['numero_identification', 'intitule','ned','nepc','secteur_id','trimestre_id'];
+    protected $fillable = ['numero_identification', 'intitule','ned','nepc','secteur_id','trimestre_id', 'user_id'];
 
     public $timestamps = false;
     protected $table = 'formation_continue';

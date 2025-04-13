@@ -65,7 +65,7 @@ class formationContinueController extends Controller
             ->exists();
 
 
-    $util = User::select("direction")->whereRaw("id=?", Auth::id())->firstOrFail();
+            $util = User::select("direction")->whereRaw("id=?", Auth::id())->firstOrFail();
 
 
 if($vrai){
@@ -111,7 +111,6 @@ journalActivites::create([
                 'user_id'=>Auth::id(),
                 'numero_identification'=> $this->generateSequentialCode()
             ]);
-
             Log::channel('user_actions')->info('Création', [
                 'user_id' => Auth::id(),
                 'action'  => 'Create Form Cont',
@@ -119,7 +118,7 @@ journalActivites::create([
             ]);
             return redirect()->back()->with('status', 'success')->with('message', 'opération effectuée avec succès!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('status', 'error')->with('message', 'Echec lors de l\' enregistrement');
+            return redirect()->back()->with('status', 'error')->with('message',$e->getMessage());
         }
     }
 
@@ -158,7 +157,6 @@ journalActivites::create([
         if (!$record) {
             return redirect()->back()->with('error', 'Ligne non trouvée.');
         }
-
         // Delete the record
         $record->delete();
 
@@ -168,7 +166,7 @@ journalActivites::create([
             'data'    => $record
         ]);
 
-        return redirect()->back()->with(key: 'success', 'Ligne supprimée avec succès.');
+        return redirect()->back()->with( 'success', 'Ligne supprimée avec succès.');
     }
     
     

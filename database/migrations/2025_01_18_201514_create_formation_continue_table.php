@@ -17,11 +17,11 @@ return new class extends Migration
             $table->string("intitule",255);
             $table->integer("ned");
             $table->integer("nepc");
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('secteur_id')->constrained('secteur')->onDelete('cascade');
             $table->foreignId('trimestre_id')->constrained('trimestre')->onDelete('cascade');
         });
     }
-
     /**
      * Reverse the migrations.
      */

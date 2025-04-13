@@ -94,8 +94,9 @@ Statistiques </button>
                     <th>Offre</th>
                     <th>Secteur</th>
                     <th>Entreprise</th>
-                    <th>Postes</th>
-                    <th>Métier</th>
+                 
+                    <th>Qualification</th>
+                    <th>Poste</th>
                     <th>Placements Prévus</th>
                     <th>Pré-selections</th>
                     <th>Placements</th>
@@ -111,17 +112,19 @@ Statistiques </button>
                     <td>{{ $d->offre }}</td>
                     <td>{{ $d->secteur->libelle }}</td>
                     <td>{{ $d->entreprise }}</td>
-                    <td>
                    
-                    @foreach ($d->detailsPED as $ped)
-                    <div>{{ $ped->npd }}</div>
-                    @endforeach
-                 
-                     </td>
+                     
                      <td>
                    
                    @foreach ($d->detailsPED as $ped)
-                   <div>{{ $ped->metier->libelle }}</div>
+                   <div>{{ $ped->qualification->libelle }}</div>
+                   @endforeach
+                
+                    </td>
+                    <td>
+                   
+                   @foreach ($d->detailsPED as $ped)
+                   <div>{{ $ped->poste}}</div>
                    @endforeach
                 
                     </td>
@@ -202,22 +205,28 @@ Statistiques </button>
                         <input type="text" id="entreprise" name="entreprise" class="form-control"  required>
                     </div>
                     <div class="mb-3">
-                        <label for="departement" class="form-label">Selectionnez le departement</label>
-                        <select id="departement" name="departement" class="form-select" required>
-                            <option value="" disabled selected></option>
-                             <option>Brazzaville</option>
-                             <option >Pointe-Noire</option>
-                             <option >Kouilou</option>
-                             <option >Niari</option>
-                             <option >Lekoumou</option>
-                             <option>Pool</option>
-                             <option>Bouenza</option>
-                             <option>Plateaux</option>
-                             <option>Cuvette</option>
-                             <option >Cuvette-Ouest</option>
-                             <option>Sangha</option>
-                             <option >Likouala</option>
-                        </select>
+    <label for="departement" class="form-label">Sélectionnez le département</label>
+    <select id="departement" name="departement" class="form-select" required>
+        <option value="" disabled selected></option>
+        <option value="Brazzaville">Brazzaville</option>
+        <option value="Pointe-Noire">Pointe-Noire</option>
+        <option value="Kouilou">Kouilou</option>
+        <option value="Niari">Niari</option>
+        <option value="Lekoumou">Lekoumou</option>
+        <option value="Pool">Pool</option>
+        <option value="Bouenza">Bouenza</option>
+        <option value="Plateaux">Plateaux</option>
+        <option value="Cuvette">Cuvette</option>
+        <option value="Cuvette-Ouest">Cuvette-Ouest</option>
+        <option value="Sangha">Sangha</option>
+        <option value="Likouala">Likouala</option>
+        <!-- Nouveaux départements -->
+        <option value="Congo-Oubangui">Congo‑Oubangui</option>
+        <option value="Nkéni-Alima">Nkéni‑Alima</option>
+        <option value="Djoué-Léfini">Djoué‑Léfini</option>
+    </select>
+
+
                     </div>
 
                     <div class="mb-3">
@@ -268,17 +277,23 @@ Statistiques </button>
                             @endforeach
                         </select>
                 </div>
-              
+                <div class="mb-3">
+                    <label for="poste" class="form-label">Poste</label>
+                        <input type="text"  id="poste" name="poste" class="form-control"  required>
+                    </div>
                     <div class="mb-3">
-                        <label for="metier_id" class="form-label">Selectionnez le metier </label>
-                        <select id="metier_id" name="metier_id" class="form-select" required>
+                        <label for="qualification_id" class="form-label">Selectionnez la qualification </label>
+                        <select id="qualification_id" name="qualification_id" class="form-select" required>
                             <option value="" disabled selected></option>
-                            @foreach($metiers as $s)
+                            @foreach($qualifications as $s)
                                 <option value="{{ $s->id }}">{{ $s->libelle }}</option>
                             @endforeach
                         </select>
                     </div>
-                   
+                    <div class="mb-3">
+                    <label for="nec" class="form-label">Nombre de Candidatures</label>
+                        <input type="number" min="1" id="nec" name="nce" class="form-control"  required>
+                    </div>
 
                     <div class="mb-3">
                     <label for="ndaf" class="form-label">Nombre de démandeurs Pré-selectionnés</label>
@@ -288,7 +303,6 @@ Statistiques </button>
                     <div class="mb-3">
                     <label for="ndaf" class="form-label">Nombre de places disponibles</label>
                      
-                  
                         <input type="text" min="1" id="npd" name="npd" class="form-control" required>
                     </div>
                     <div class="mb-3">

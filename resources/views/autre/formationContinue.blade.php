@@ -91,6 +91,7 @@ Statistiques </button>
                     <th>Employés d'entreprises à prendre à charge</th>
                     <th>Employés d'entreprises développés</th>
                     <th>Employés d'entreprises pris en charge</th>
+                    <th>Entreprise</th>
                     
                     <th>Trimestre</th>
                     <th>Année</th>
@@ -119,12 +120,24 @@ Statistiques </button>
                    @endforeach
                 
                     </td>
+                    <td>
+                   
+                   @foreach ($d->realisationFC as $fc)
+                   <div>{{ $fc->entreprise }}</div>
+                   @endforeach
+                
+                    </td>
                     <td>{{ $d->trimestre->libelle}}</td>
                     <td>{{ $d->trimestre->annee->libelle}}</td>
                  
                     <td> 
                              <a href="" class="btn btn-sm btn-info"> <i class="fa fa-edit"></i> </a>
-                            <a href="" class="btn btn-sm btn-danger"> <i class="fa fa-trash"></i> </a>
+                             <form action="{{ route('formation_continue.destroy', $d->id) }}" method="POST" onsubmit="return confirm('Etes vous sûr de vouloir supprimer cette ligne ?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-danger"> <i class="fas fa-trash fa-xs"></i>  </button>
+            </form> 
+                       
                         
                     </td>
                      </tr>
@@ -228,10 +241,17 @@ Statistiques </button>
                             @endforeach
                         </select>
                     </div>
-                   
+                    <div class="mb-3">
+                    <label for="entreprise" class="form-label">Entreprise </label>
+                        <input type="text" name="entreprise" class="form-control"  required>
+                    </div>
+                    <div class="mb-3">
+                    <label for="nbreEmploye" class="form-label">Entrez le nombre d'employés d'entreprises développés </label>
+                        <input type="number" min="1" id="nbrEmploye" name="nbreEmploye" class="form-control"  required>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    
+    
                     <button type="submit" class="btn btn-success"> <i class="fa fa-save"></i> Enregistrer</button>
                 </div>
             </form>
@@ -268,6 +288,11 @@ Statistiques </button>
                    
                         <input type="text" min="1" id="nepc" name="nepc" class="form-control"  required>
                     </div>  
+                    <div class="mb-3">
+                    <label for="ned" class="form-label">Entreprise  </label>
+                       
+                        <input type="text"  id="entreprise" name="entreprise" class="form-control"  required>
+                    </div>
  
                 </div>
                 <div class="modal-footer">

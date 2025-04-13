@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer("ndf");
             $table->integer("ndi");
+            $table->integer("decrochage");
             $table->foreignId('formation_qual_id')->constrained('formation_qual')->onDelete('cascade');
             
           

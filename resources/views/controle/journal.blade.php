@@ -94,7 +94,7 @@
                            <td> 
                            
                              
-                            <form action="{{ route('activites.destroy', $d->id) }}" method="POST" onsubmit="return confirm('Etes vous sûr de vouloir supprimer cette ligne ?');">
+                            <form action="{{ route('journal_activite.destroy', $d->id) }}" method="POST" onsubmit="return confirm('Etes vous sûr de vouloir supprimer cette ligne ?');">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger"> <i class="fas fa-trash fa-xs"></i>  </button>

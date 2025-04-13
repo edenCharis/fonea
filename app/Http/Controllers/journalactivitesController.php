@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JournalActivites;
 use Illuminate\Http\Request;
 
 class journalactivitesController extends Controller
@@ -60,5 +61,24 @@ class journalactivitesController extends Controller
     public function destroy(string $id)
     {
         //
+        $record = journalActivites::find($id);
+
+        if (!$record) {
+            return redirect()->back()->with('error', 'Ligne non trouvée.');
+        }
+        
+        $record->delete();
+
+        Log::channel('user_actions')->info('Suppression', [
+            'user_id' => Auth::id(),
+            'action'  => 'DELETE Activités',
+            'data'    => $record
+        ]);
+
+        return redirect()->back()->with('success', 'Ligne supprimée avec succès.');
+    
     }
-}
+
+    
+    }
+

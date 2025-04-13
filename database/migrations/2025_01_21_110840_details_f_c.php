@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('formation_continue_id')->constrained('formation_continue')->onDelete('cascade');
             $table->foreignId('competence_id')->constrained('competence')->onDelete('cascade');
+            $table->string("entreprise",255);
+            $table->integer("nbrEmploye");
               });
     }
 

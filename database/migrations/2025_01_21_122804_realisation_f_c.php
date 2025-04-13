@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->integer("ned");
             $table->integer("nepc");
+            $table->string("entreprise");
             $table->foreignId('formation_continue_id')->constrained('formation_continue')->onDelete('cascade');
              });
     }

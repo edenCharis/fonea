@@ -35,15 +35,16 @@ class detailsFCcontroller extends Controller
         $request->validate([
             
             'formation_continue_id' => 'required|exists:formation_continue,id',
-         
             'competence_id' => 'required|exists:secteur,id',
-            
+           
         ]);
         try {
 
             detailsFC::create([
                 'formation_continue_id' => $request->formation_continue_id,
                 'competence_id' => $request->competence_id,
+                'entreprise' => $request->entreprise,
+                'nbrEmploye' => $request->input("nbreEmploye")
             ]);
 
             Log::channel('user_actions')->info('creation', [

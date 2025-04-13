@@ -42,7 +42,8 @@ class realisationFCcontroller extends Controller
             realisationFC::create([
                 'formation_continue_id' => $request->formation_continue_id,
                 'ned'=> $request->input("ned"),
-                'nepc' => $request->input("nepc")
+                'nepc' => $request->input("nepc"),
+                'entreprise' => $request->input("entreprise")
             ]);
 
             Log::channel('user_actions')->info('Create', [
@@ -55,7 +56,7 @@ class realisationFCcontroller extends Controller
             ->back()
             ->with('message', 'opération effectuée avec succès!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('status', 'error')->with('message', 'Echec !');
+            return redirect()->back()->with('status', 'error')->with('message', $e->getMessage());
         }
     }
 

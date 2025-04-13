@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class detailsPED extends Model
 {
     //
-    protected $fillable = ['nc','npd','nip','ped_id','metier_id'];
+    protected $fillable = ['nc','npd','nip','ped_id','qualification_id','poste','nce'];
 
     protected $table = 'details_p_e_d';
     public $timestamps = false;
@@ -21,8 +21,8 @@ class detailsPED extends Model
 
     
 
-    public function metier(){
+    public function qualification(){
 
-        return $this->belongsTo(metier::class, "metier_id","id");
+        return $this->belongsTo(qualification::class, "qualification_id","id");
     }
 }

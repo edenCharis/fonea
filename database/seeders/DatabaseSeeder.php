@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\direction;
 use App\Models\role;
+use App\Models\Annee;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -20,7 +21,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
            // SecteursTableSeeder::class,
-            //MetiersTableSeeder::class
+            //MetiersTableSeeder::class,
+           // CompetencesTableSeeder::class
         ]);
 
 
@@ -51,14 +53,14 @@ class DatabaseSeeder extends Seeder
             ],
         ]);*/
 
-        User::factory()->create([
+       /* User::factory()->create([
             'name' => 'Eden',
             'email' => 'edenngouanda@gmail.com',
             'password' => Hash::make('Fonea@2025*'),
             'role' => "administrateur",
             'direction' => "DSIP"
             
-        ]);
+        ]);*/
 
        
 
@@ -81,12 +83,28 @@ class DatabaseSeeder extends Seeder
             'name' => "Agent DCB"
         ],
         [
+            'name' => "directeur"
+        ],
+        [
             'name' => "directeur général"
         ],
         [
             'name' => "Délégué au Contrôle Budgetaire"
         ],
     ]);*/
+
+     Annee::insert([
+        [
+            'libelle' => "2024"
+        ],
+        [
+            'name' => "2025"
+        ],
+
+
+
+      
+    ]);
 
 
 
