@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\direction;
 use App\Models\role;
 use App\Models\Annee;
+use App\Models\Annee;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -61,6 +62,7 @@ class DatabaseSeeder extends Seeder
             'direction' => "DSIP"
             
         ]);*/
+        ]);*/
 
        
 
@@ -86,6 +88,9 @@ class DatabaseSeeder extends Seeder
             'name' => "directeur"
         ],
         [
+            'name' => "directeur"
+        ],
+        [
             'name' => "directeur général"
         ],
         [
@@ -105,6 +110,19 @@ class DatabaseSeeder extends Seeder
 
       
     ]);*/
+
+     Annee::insert([
+        [
+            'libelle' => "2024"
+        ],
+        [
+            'name' => "2025"
+        ],
+
+
+
+      
+    ]);
 
 
 

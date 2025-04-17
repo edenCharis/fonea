@@ -87,6 +87,8 @@ Route::middleware("auth")->group(function () {
   Route::resource('activites', activitesController::class)->middleware(CheckDirection::class.':DCB');
   Route::resource('journal_activite', journalactivitesController::class)->middleware(CheckDirection::class.':DCB');
   Route::resource('ods', odsController::class)->middleware(CheckDirection::class.':DSIP');
+  Route::resource('journal_activite', journalactivitesController::class)->middleware(CheckDirection::class.':DCB');
+
 
 
 });

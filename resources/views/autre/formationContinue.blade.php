@@ -130,6 +130,12 @@ Statistiques </button>
                 <button type="submit" class="btn btn-sm btn-danger"> <i class="fas fa-trash fa-xs"></i>  </button>
             </form> 
                        
+                             <form action="{{ route('formation_continue.destroy', $d->id) }}" method="POST" onsubmit="return confirm('Etes vous sûr de vouloir supprimer cette ligne ?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-danger"> <i class="fas fa-trash fa-xs"></i>  </button>
+            </form> 
+                       
                         
                     </td>
                      </tr>
@@ -243,6 +249,7 @@ Statistiques </button>
                     </div>
                 </div>
                 <div class="modal-footer">
+    
     
                     <button type="submit" class="btn btn-success"> <i class="fa fa-save"></i> Enregistrer</button>
                 </div>
