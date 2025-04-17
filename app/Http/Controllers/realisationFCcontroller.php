@@ -44,7 +44,7 @@ class realisationFCcontroller extends Controller
                 'ned'=> $request->input("ned"),
                 'nepc' => $request->input("nepc"),
                 'entreprise' => $request->input("entreprise")
-                'entreprise' => $request->input("entreprise")
+                
             ]);
 
             Log::channel('user_actions')->info('Create', [
