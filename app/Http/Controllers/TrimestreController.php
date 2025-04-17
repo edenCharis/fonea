@@ -31,11 +31,19 @@ class TrimestreController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'annee_id' =>  'required|exists:annee,id'
+        ]);
 
-     'name',
+        Trimestre::create([
+            'annee_id' => $request->annee_id,
+            'libelle'=> $request->input("name")
+        ]);
+
+        return redirect()->back()->with('success', 'TRimestre Crée avec succès!');
+   
     }
-    
 
     /**
      * Display the specified resource.

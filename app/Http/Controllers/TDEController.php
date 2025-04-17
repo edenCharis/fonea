@@ -120,7 +120,7 @@ journalActivites::create([
 
             return redirect()->back()->with('status', 'success')->with('message', 'opération effectuée avec succès!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('status', 'error')->with('message', 'Echec !');
+            return redirect()->back()->with('status', 'error')->with('message', $e->getMessage());
         }
     }
 

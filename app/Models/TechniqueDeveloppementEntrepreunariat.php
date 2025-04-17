@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class TechniqueDeveloppementEntrepreunariat extends Model
 {
     //
-    protected $fillable = ['numero_identification', 'intitule','trimestre_id',"type"];
+    protected $fillable = ['numero_identification', 'intitule','trimestre_id',"type",'user_id'];
 
     public $timestamps = false;
     protected $table = 'tde';

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\direction;
 use App\Models\role;
+use App\Models\Annee;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -19,12 +20,13 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         $this->call([
-           // SecteursTableSeeder::class,
-            //MetiersTableSeeder::class
+           //SecteursTableSeeder::class,
+            //MetiersTableSeeder::class,
+            //CompetencesTableSeeder::class
         ]);
 
 
-     /*   Direction::insert([
+      /* Direction::insert([
             [
                 'libelle' => "Direction des services informatiques et de la prospective",
                 'code' => "DSIP",
@@ -49,21 +51,21 @@ class DatabaseSeeder extends Seeder
                 'libelle' => "Direction des affaires juridiques, financières et des ressources humaines",
                 'code' => "DAJFRH",
             ],
-        ]);*/
+        ]);
 
-        User::factory()->create([
+       User::factory()->create([
             'name' => 'Eden',
             'email' => 'edenngouanda@gmail.com',
             'password' => Hash::make('Fonea@2025*'),
             'role' => "administrateur",
             'direction' => "DSIP"
             
-        ]);
+        ]);*/
 
        
 
 
-       /*Role::insert([
+      Role::insert([
         [
             'name' => "Agent DSIP"
         
@@ -81,11 +83,27 @@ class DatabaseSeeder extends Seeder
             'name' => "Agent DCB"
         ],
         [
+            'name' => "directeur"
+        ],
+        [
             'name' => "directeur général"
         ],
         [
             'name' => "Délégué au Contrôle Budgetaire"
         ],
+    ]);
+
+   /*  Annee::insert([
+        [
+            'libelle' => "2024"
+        ],
+        [
+            'name' => "2025"
+        ],
+
+
+
+      
     ]);*/
 
 

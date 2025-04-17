@@ -147,7 +147,7 @@ Appliquer </button>
                     @foreach ($data as $d)  
                      <tr>
                        <td> {{ $d->secteur->libelle }}</td>
-                       <td> {{ $d->metier->libelle }}</td>
+                       <td> {{ $d->metier }}</td>
                        <td> {{ $d->total_projet}}</td>
                        <td> {{ $d->total_formation }}</td>
                        <td> {{ $d->total_financement }}</td>

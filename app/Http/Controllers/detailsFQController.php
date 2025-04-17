@@ -37,8 +37,7 @@ class detailsFQController extends Controller
             'ndaf' => 'required|min:1',
             'formation_qual_id' => 'required|exists:formation_qual,id',
             'qualification_id' => 'required|exists:qualification,id',
-            'secteur_id' => 'required|exists:secteur,id',
-            
+            'secteur_id' => 'required|exists:secteur,id' 
         ]);
         try {
 
@@ -47,7 +46,8 @@ class detailsFQController extends Controller
                 'qualification_id' => $request->qualification_id,
                 'secteur_id' => $request->secteur_id,
                 'ndai'=> $request->input("ndai"),
-                'ndaf' => $request->input("ndaf")
+                'ndaf' => $request->input("ndaf"),
+                'poste' => $request->input("poste")
             ]);
 
             Log::channel('user_actions')->info('Create', [
@@ -77,9 +77,38 @@ class detailsFQController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request,string $id)
     {
         //
+        $request->validate([
+            'ndai' => 'required|min:1',
+            'ndaf' => 'required|min:1',
+            'formation_qual_id' => 'required|exists:formation_qual,id',
+            'qualification_id' => 'required|exists:qualification,id',
+            'secteur_id' => 'required|exists:secteur,id',
+        ]);
+    
+        try {
+            $details = detailsFQ::findOrFail($id);
+    
+            $details->update([
+                'formation_qual_id' => $request->formation_qual_id,
+                'qualification_id' => $request->qualification_id,
+                'secteur_id' => $request->secteur_id,
+                'ndai' => $request->input("ndai"),
+                'ndaf' => $request->input("ndaf"),
+            ]);
+    
+            Log::channel('user_actions')->info('Update', [
+                'user_id' => Auth::id(),
+                'action'  => 'Update DetailsFQ',
+                'data'    => $request->all(),
+            ]);
+    
+            return redirect()->route('detailsFQ.index')->with('message', 'Modification effectuée avec succès!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('status', 'error')->with('message', $e->getMessage());
+        }
     }
 
     /**

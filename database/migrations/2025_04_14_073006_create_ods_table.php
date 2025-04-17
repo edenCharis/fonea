@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('realisation_f_q', function (Blueprint $table) {
+        Schema::create('ods', function (Blueprint $table) {
             $table->id();
-            $table->integer("ndf");
-            $table->integer("ndi");
-            $table->integer("decrochage");
-            $table->foreignId('formation_qual_id')->constrained('formation_qual')->onDelete('cascade');
-            
-          
+            $table->String("libelle")->unique();
+            $table->foreign("direction")->references('code')->on('direction')->onDelete("cascade");
+       
+           
         });
     }
 
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('realisation_f_q');
+        Schema::dropIfExists('ods');
     }
 };

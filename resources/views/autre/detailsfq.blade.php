@@ -69,8 +69,8 @@
               </div>
             
                 <div class="card-body">
-                <form method="POST" action="{{ route("detailsFQ.edit",$details->id) }}">
-                @csrf
+                <form method="GET" action="{{ route("detailsFQ.edit",$details->id) }}">
+                  @csrf
                 <div class="mb-3">
                         <label for="secteur_id" class="form-label">Selectionnez le secteur </label>
                         <select id="secteur_id" name="secteur_id" class="form-select" required>

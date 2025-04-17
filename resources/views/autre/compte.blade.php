@@ -58,10 +58,7 @@
         </div>
       </div>
     </section>
-  </div>
-
-
-  <section class="content">
+    <section class="content">
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
@@ -92,11 +89,11 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="taux_realisation">Role</label>
-                                    <input type="number" class="form-control" id="role" name="role" value="{{ $data->role }}"  required disabled>
+                                    <input type="text" class="form-control" id="role" name="role" value="{{ $data->role }}"  required disabled>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                 <label for="taux_realisation">Direction</label>
-                                    <input type="number" class="form-control" id="direction" name="direction" value="{{ $data->direction }}"  required disabled>
+                                    <input type="text" class="form-control" id="direction" name="direction" value="{{ $data->direction }}"  required disabled>
                                 
                                   
                                 </div>
@@ -111,7 +108,9 @@
             </div>
 
       <!-- /.container-fluid -->
-    </section>
+ </section>
+  </div>
+
 
 <div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalLabel" aria-hidden="true">
     <div class="modal-dialog">

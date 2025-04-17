@@ -9,7 +9,7 @@ class statFormContinue extends Model
     //
 
     
-    protected $fillable = ['ned','nepc','secteur_id','trimestre_id','competence_id'];
+    protected $fillable = ['ned','nepc','secteur_id','qualification_id','trimestre_id','competence_id'];
     protected $table = 'stat_form_continue';
     public $timestamps = false;
 
@@ -25,6 +25,10 @@ class statFormContinue extends Model
     public function secteur(){
         
         return $this->belongsTo(secteur::class,"secteur_id","id");
+    }
+    public function qualification(){
+        
+        return $this->belongsTo(qualification::class,"qualification_id","id");
     }
 
     public function competence(){

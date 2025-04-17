@@ -137,8 +137,8 @@ Appliquer </button>
                   <tr>
                     
                     <th>Secteur</th>
-                    <th>Compétences</th>
-                  
+                    <th>Qualification / Groupe de compétences</th>
+                    <th>Poste</th>
                     <th>Entreprises prises en charges</th>
                     <th>Employés formés</th>
          
@@ -151,9 +151,10 @@ Appliquer </button>
                     @foreach ($data as $d)  
                      <tr>
                        <td> {{ $d->secteur->libelle }}</td>
-                       <td> {{ $d->competence->libelle }}</td>
+                       <td> {{ $d->qualification->libelle }}</td>
+                       <td> {{ $d->poste }}</td>
                    
-                       <td> {{ $d->total_entreprises }}</td>
+                       <td> {{ $d->entreprise }}</td>
                        <td> {{ $d->total_employes }}</td>
                     
                        <td> {{ $d->trimestre->libelle."-".$d->trimestre->annee->libelle }}</td>

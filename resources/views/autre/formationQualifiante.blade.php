@@ -261,8 +261,8 @@ Statistiques </button>
                         <label for="qualification_id" class="form-label">Selectionnez la qualification </label>
                         <select id="qualification_id" name="qualification_id" class="form-select" required>
                             <option value="" disabled selected></option>
-                            @foreach($qualification as $s)
-                                <option value="{{ $s->id }}">{{ $s->libelle }}</option>
+                            @foreach($qualification as $p)
+                                <option value="{{ $p->id }}">{{ $p->libelle }}</option>
                             @endforeach
                         </select>
                     </div>

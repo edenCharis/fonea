@@ -103,9 +103,9 @@ class AutreController extends Controller
        $data = ped::all()->where("user_id",Auth::id());
        $data1= trimestre::all();
        $data2= secteur::all();
-       $data3= metier::all();
+       $data3= qualification::all();
     
-       return view("autre.ped",["data" => $data,"metiers" => $data3, "trimestres" => $data1,"secteurs" => $data2]);
+       return view("autre.ped",["data" => $data,"qualifications" => $data3, "trimestres" => $data1,"secteurs" => $data2]);
     
     }
     public function detailsfq(){

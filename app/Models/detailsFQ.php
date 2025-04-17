@@ -27,6 +27,6 @@ class detailsFQ extends Model
 
     public function qualification(){
 
-        return $this->belongsTo(metier::class);
+        return $this->belongsTo(qualification::class);
     }
 }

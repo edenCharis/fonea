@@ -22,7 +22,12 @@ class qualification extends Model
         return $this->hasMany(stat_formation_qual::class,"qualification_id","id");
         
     }
+     
+    public function qualification(){
 
+        return $this->hasMany(qualification::class,"qualification_id","id");
+        
+    }
     public function detailsFQ()
     {
         return $this->hasMany(detailsFQ::class);

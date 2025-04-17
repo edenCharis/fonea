@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('competence', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('qualification_id')->constrained('qualification')->onDelete('cascade');
             $table->string("libelle",255)->unique();
         });
     }

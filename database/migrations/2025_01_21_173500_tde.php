@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string("numero_identification");
             $table->string("intitule");
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+           
             $table->foreignId('trimestre_id')->constrained('trimestre')->onDelete('cascade');
        
              });

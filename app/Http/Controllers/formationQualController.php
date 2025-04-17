@@ -9,13 +9,14 @@ use App\Models\activites;
 use App\Models\user;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 use Illuminate\Support\Facades\Log;
-use Carbon\carbon;
+
 
 class formationQualController extends Controller
 {
@@ -70,7 +71,10 @@ class formationQualController extends Controller
         //
 
       
-        
+
+
+$date = Carbon::now()->format('Y-m-d');
+echo $date; // Outputs: 2025-04-11 (or the current date)
             $request->validate([
                 'name' => 'required|string|max:255',
                 'trimestre_id' => 'required|exists:trimestre,id',
@@ -98,7 +102,8 @@ class formationQualController extends Controller
             "statut" => "Budgetisé",
             "type" => "Formation qualifiante",
             "direction" => $util->direction,
-            "user_id" => $user->id
+            "user_id" => $user->id,
+            "date_enregistrement" => $date
         ]);
 
         $record = activites::select("id")
@@ -119,7 +124,8 @@ class formationQualController extends Controller
             "statut" => "Non Budgetisé",
             "type" => "Formation qualifiante",
             "direction" => $util->direction,
-            "user_id" => $user->id
+            "user_id" => $user->id,
+            "date_enregistrement" => $date
         ]);
     }
 

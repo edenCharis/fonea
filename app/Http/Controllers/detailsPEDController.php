@@ -37,18 +37,20 @@ class detailsPEDController extends Controller
             'nc' => 'required|min:1',
             'npd' => 'required|min:1',
             'ped_id' => 'required|exists:ped,id',
-            'metier_id' => 'required|exists:metier,id',
-            'nip' => 'required|exists:secteur,id',
+            'qualification_id' => 'required|exists:qualification,id',
+            'nip' => 'required|min:1'
             
         ]);
         try {
 
             detailsPED::create([
                 'ped_id' => $request->ped_id,
-                'metier_id' => $request->metier_id,
+                'qualification_id' => $request->qualification_id,
                 'nc' => $request->nc,
+                'poste' => $request->input("poste"),
                 'nip'=> $request->input("nip"),
-                'npd' => $request->input("npd")
+                'npd' => $request->input("npd"),
+                'nce' => $request->input("nce")
             ]);
 
             Log::channel('user_actions')->info('Create', [

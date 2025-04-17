@@ -233,7 +233,7 @@ Statistiques </button>
                         <select id="tde_id" name="tde_id" class="form-select" required>
                             <option value="" disabled selected></option>
                             @foreach($data as $s)
-                                <option value="{{ $s->id }}">{{ $s->libelle."-".$s->numero_identification }}</option>
+                                <option value="{{ $s->id }}">{{ $s->numero_identification }}</option>
                             @endforeach
                         </select>
                     </div>

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class detailsFC extends Model
 {
     //
-    protected $fillable = ['formation_continue_id','competence_id'];
+    protected $fillable = ['formation_continue_id','nbrEmploye','competence_id','entreprise','poste'];
 
     protected $table = 'details_f_c';
     public $timestamps = false;

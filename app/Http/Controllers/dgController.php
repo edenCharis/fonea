@@ -53,13 +53,18 @@ class dgController extends Controller
         $annees = annee::all();
         $metiers = metier::all();
         $competences =competence::all();
+        $qualifications =qualification::all();
         $trimestres = trimestre::select("libelle")->distinct()->get();
-        $data = statFormContinue::select("trimestre_id","secteur_id","competence_id", DB::raw('SUM(ned) as total_employes'),DB::raw('SUM(nepc) as total_entreprises'))
-        ->groupBy("secteur_id","trimestre_id")
+ 
+        
+
+
+        $data = statFormContinue::select("trimestre_id","poste","qualification_id","secteur_id","competence_id","entreprise", DB::raw('SUM(ned) as total_employes'))
+       ->groupBy("secteur_id","trimestre_id","poste")
         ->get();
 
 
-        return view("dg.formCont", ["data" => $data,"secteurs" => $secteurs, "annees" => $annees, "metiers" => $metiers, "competences" => $competences, "trimestres" => $trimestres]);
+        return view("dg.formCont", ["data" => $data,"secteurs" => $secteurs,"qualifications" => $qualifications, "annees" => $annees, "metiers" => $metiers, "competences" => $competences, "trimestres" => $trimestres]);
    
     }
 

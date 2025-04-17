@@ -17,7 +17,6 @@ Route::match(['get','post'],'/register',[AuthController::class,'register'])->nam
 Route::match(['get','post'],'/login',[AuthController::class,'login'])->name("login");
 Route::get('/logout',[AuthController::class,'logout'])->name("logout");
 
-
 Route::name("administrateur.")->middleware(CheckDirection::class.':DSIP' )->group(function () { 
     Route::get('administrateur', [AdminController::class,'index'])->name("administrateur")->middleware("auth");
     Route::get('annee', [AdminController::class,'annee'])->name("annee")->middleware("auth");
@@ -27,6 +26,7 @@ Route::name("administrateur.")->middleware(CheckDirection::class.':DSIP' )->grou
     Route::get('competence', [AdminController::class,'competence'])->name("competence")->middleware("auth");
     Route::get('qualification', [AdminController::class,'qualification'])->name("qualification")->middleware("auth");
     Route::get('directions', [AdminController::class,'direction'])->name("direction")->middleware("auth");
+    Route::get('offre', [AdminController::class,'ods'])->name("offre")->middleware("auth");
   
   });
 
@@ -85,6 +85,8 @@ Route::middleware("auth")->group(function () {
  
 
   Route::resource('activites', activitesController::class)->middleware(CheckDirection::class.':DCB');
+  Route::resource('journal_activite', journalactivitesController::class)->middleware(CheckDirection::class.':DCB');
+  Route::resource('ods', odsController::class)->middleware(CheckDirection::class.':DSIP');
 
 
 });
@@ -112,5 +114,5 @@ Route::middleware("auth")->group(function () {
     Route::get('controle', [controleController::class,'index'])->name("controle")->middleware(CheckDirection::class.':DCB');
     Route::get('editer', [controleController::class,'editer'])->name("editer")->middleware(CheckDirection::class.':DCB');
     Route::get('activite', [controleController::class,'activite'])->name("activite")->middleware(CheckDirection::class.':DCB');
- 
+   
   });

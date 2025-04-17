@@ -45,12 +45,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h5 class="text-info">Gestion des compétences</h5>
+            <h5 class="text-info">Gestion des offres de services</h5>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Tableau de Bord</a></li>
-              <li class="breadcrumb-item active"> Compétence</li>
+              <li class="breadcrumb-item"><a href="/administrateur"></a>Tableau de bord</li>
+              <li class="breadcrumb-item active">ODS</li>
             </ol>
           </div>
         </div>
@@ -67,11 +67,8 @@
 
             <div class="card">
               <div class="card-header">
-               
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addYearModal">
-                    <i class="fa fa-plus" ></i>
-        Ajouter
-    </button>
+              <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTrimestreModal">
+     <i class="fa fa-plus"></i>  Ajouter </button>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -80,8 +77,9 @@
                   <tr>
                  
                    
-                    <th>Compétence</th>
-                    <th>Qualification</th>
+                    <th>Offre de services</th>
+                    <th>Direction</th>
+                   
                     <th>Actions</th>
                   </tr>
                   </thead>
@@ -89,7 +87,7 @@
                     @forelse ($data as $d)  
                   <tr>
                     <td>{{ $d->libelle}}</td>
-                    <td>{{ $d->qualification->libelle}}</td>
+                    <td>{{ $d->direction}}</td>
                  
 
                     <td> 
@@ -116,41 +114,73 @@
         <!-- /.row -->
       </div>
       <!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
-    <div id="sessionModal" class="modal">
+
+
+
+
+<!-- Success/Error Modal -->
+<div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <h3 id="modalTitle"></h3>
-            <p id="modalMessage"></p>
-            <button class="close-btn" data-close>Close</button>
-        </div>
-    </div>
-    <div class="modal fade" id="addYearModal" tabindex="-1" aria-labelledby="addYearModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addYearModalLabel">     <i class="nav-icon fas fa-lightbulb"></i>  Ajouter une compétence </h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"> </button>
-                </div>
-                <form action=" {{ Route('traitementCompetence.store')}}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="mb-3">
-                           
-                            <input type="text" class="form-control" id="libelle" name="libelle" placeholder="Travail d'équipe" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                       
-                        <button type="submit" class="btn btn-success"> <i class="fa fa-save"></i>  Enregistrer</button>
-                       
-                    </div>
-                </form>
+            <div class="modal-header">
+                <h5 class="modal-title" id="sessionModalLabel">
+                    {{ session('status') === 'success' ? 'Success' : 'Error' }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{{ session('message') }}</p>
             </div>
         </div>
     </div>
-  </div>
 </div>
+
+<!-- Auto-trigger Modal if Session is Set -->
+@if(session('status'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var sessionModal = new bootstrap.Modal(document.getElementById('sessionModal'));
+            sessionModal.show();
+        });
+    </script>
+@endif
+
+    </section>
+    <!-- /.content -->
+
+    <div class="modal fade" id="addTrimestreModal" tabindex="-1" aria-labelledby="addTrimestreModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTrimestreModalLabel">   <i class="nav-icon fas fa-briefcase"></i> Ajouter une offre de service </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="trimestreForm" method="POST" action="{{ route('ods.store') }}">
+                @csrf
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="annee_id" class="form-label">Selectionnez la direction </label>
+                        <select id="direction" name="direction" class="form-select" required>
+                            <option value="" disabled selected></option>
+                            @foreach($directions as $s)
+                                <option value="{{ $s->code }}">{{ $s->libelle }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Offre de service</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="Entrez l'offre de service" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    
+                    <button type="submit" class="btn btn-success"> <i class="fa fa-plus"></i> Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+  </div>
   <!-- /.content-wrapper -->
  @include("admin.footer")
 
@@ -196,30 +226,5 @@
     });
   });
 </script>
-
-<script>
-       
-        const sessionModal = document.getElementById('sessionModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalMessage = document.getElementById('modalMessage');
-        const closeModalBtn = document.querySelector('[data-close]');
-
-        
-        const sessionStatus = "{{ session('status') }}";
-        const sessionMessage = "{{ session('message') }}";
-
-     
-        if (sessionStatus && sessionMessage) {
-            modalTitle.textContent = sessionStatus === 'success' ? 'Success' : 'Error';
-            modalMessage.textContent = sessionMessage;
-            modalMessage.className = sessionStatus;
-            sessionModal.classList.add('active');
-        }
-
-        
-        closeModalBtn.addEventListener('click', () => {
-            sessionModal.classList.remove('active');
-        });
-    </script>
 </body>
 </html>

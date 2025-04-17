@@ -1,14 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\ods;
 
-use App\Models\realisationFC;
 use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-
-class realisationFCcontroller extends Controller
+class odsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -32,30 +29,22 @@ class realisationFCcontroller extends Controller
     public function store(Request $request)
     {
         //
-
         $request->validate([
-            'ned' => 'required|min:1',
+            'name' => 'required|string|max:255',
+            'direction' => 'required|exists:direction,code',
           
-            'formation_continue_id' => 'required|exists:formation_continue,id'
         ]);
+
         try {
-            realisationFC::create([
-                'formation_continue_id' => $request->formation_continue_id,
-                'ned'=> $request->input("ned"),
-                'entreprise' => $request->input("entreprise")
+            ods::create([
+                'libelle' => $request->name,
+                'direction'=> $request->direction
+              
             ]);
 
-            Log::channel('user_actions')->info('Create', [
-                'user_id' => Auth::id(),
-                'action'  => 'Create realisation FC',
-                'data'    => $request->all()
-            ]);
- 
-            return redirect()
-            ->back()
-            ->with('message', 'opération effectuée avec succès!');
+            return redirect()->back()->with('status', 'success')->with('message', 'opération effectuée avec succès!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('status', 'error')->with('message', $e->getMessage());
+            return redirect()->back()->with('status', 'error')->with('message', 'Echec !');
         }
     }
 

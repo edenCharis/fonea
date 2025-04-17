@@ -16,6 +16,7 @@ use  App\Models\Direction;
 use  App\Models\qualification;
 use  App\Models\competence;
 use  App\Models\role;
+use  App\Models\ods;
 
 class AdminController extends Controller
 {
@@ -75,5 +76,13 @@ class AdminController extends Controller
         $data = Direction::all();
 
         return view("admin.direction",["data" => $data]);
+    }
+
+    
+    public function ods()
+    {
+        $data = ods::all();
+        $directions = Direction::all();
+        return view("admin.ods",["data" => $data, "directions" => $directions]);
     }
 }

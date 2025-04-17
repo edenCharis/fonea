@@ -8,7 +8,7 @@ class competence extends Model
 {
     //
 
-    protected $fillable = ['libelle'];
+    protected $fillable = ['libelle', 'qualification_id'];
 
     protected $table = 'competence';
     public $timestamps = false;
@@ -16,6 +16,11 @@ class competence extends Model
     public function detailsFC()
     {
         return $this->hasMany(detailsFC::class);
+    }
+
+    public function qualification()
+    {
+        return $this->belongsTo(qualification::class, "qualification_id", "id");
     }
 
     public function statFormContinue(){
