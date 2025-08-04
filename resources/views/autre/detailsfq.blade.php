@@ -41,7 +41,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-              </div>
+          </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="/fomationQualifiante">Formation Qualifiante</a></li>
@@ -63,8 +63,8 @@
         
           <div class="row">
           <div class="col-sm-6">
-                <div class="card">
-              <div class="card-header">
+           <div class="card">
+              <div class="card-header bg-warning text-white">
                 <h3 class="card-title">Détailler une action de formation qualifiante</h3>
               </div>
             
@@ -97,13 +97,48 @@
                     </div>
                     <div class="mb-3">
                     <label for="ndaf" class="form-label">Nombre de démandeurs à insérer</label>
-                     
-                  
                         <input type="text" min="1" id="ndai" name="ndai" class="form-control" value="{{ $details->ndai}}" required>
                     </div>
                     
                   <div class="card-footer">
-                  <button type="submit" class="btn btn-success"> <i class="fas fa-edit fa-xs"></i> Modifier</button>
+                  <button type="submit" class="btn btn-warning"> <i class="fas fa-edit fa-xs"></i> Modifier</button>
+                </div>
+              </form>
+
+                </div>
+               </div>
+                   
+                </div>
+                     <div class="col-sm-6">
+           <div class="card">
+              <div class="card-header bg-secondary text-white">
+                <h3 class="card-title"> Réalisation d'une formation qualifiante</h3>
+              </div>
+                <div class="card-body">
+                <form method="GET" action="{{ route("realisationFQ.edit",$realisations->id) }}">
+                  @csrf
+
+                    <div class="mb-3">
+
+                       
+                        <input type="hidden"  id="form_qual_id" name="form_qual_id" class="form-control" value="{{ $data->id}}"  required>
+                    </div>
+                    <div class="mb-3">
+                    <label for="ndaf" class="form-label">Nombre de démandeurs formés</label>
+                     
+                        <input type="number" min="1" id="ndaf" name="ndf" class="form-control" value="{{ $realisations->ndf}}"  required>
+                    </div>
+                    <div class="mb-3">
+                    <label for="ndaf" class="form-label">Nombre de démandeurs  inséres </label>
+                        <input type="number" min="1" id="ndi" name="ndi" class="form-control" value="{{ $realisations->ndi}}" required>
+                    </div>
+                     <div class="mb-3">
+                    <label for="ndaf" class="form-label">Décrochage </label>
+                        <input type="number" min="1" id="decrochage" name="decrochage" class="form-control" value="{{ $realisations->decrochage}}" required>
+                    </div>
+                    
+                  <div class="card-footer">
+                  <button type="submit" class="btn btn-secondary"> <i class="fas fa-edit fa-xs"></i> Modifier</button>
                 </div>
               </form>
 
@@ -113,7 +148,7 @@
                 </div>
               <div class="col-sm-6">
                 <div class="card">
-              <div class="card-header">
+              <div class="card-header bg-info text-white">
                 <h3 class="card-title">Editer une action de formation qualifiante</h3>
               </div>
             
@@ -138,7 +173,7 @@
 
                   <div class="card-footer">
 
-                  <button type="submit" class="btn btn-success"> <i class="fas fa-edit fa-xs"></i> Modifier</button>
+                  <button type="submit" class="btn btn-info"> <i class="fas fa-edit fa-xs"></i> Modifier</button>
                 </div>
               </form>
                    

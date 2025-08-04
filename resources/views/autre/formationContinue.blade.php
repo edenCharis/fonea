@@ -74,10 +74,6 @@
   <button type="button" class="btn btn-sm  btn-dark" data-bs-toggle="modal" data-bs-target="#add2">
   <i class="fas fa-rocket"></i>
 Réalisations </button>
-
-<button type="button" class="btn btn-sm  btn-info" data-bs-toggle="modal" data-bs-target="#add3">
-<i class="fas fa-chart-line"></i>
-Statistiques </button>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -123,18 +119,15 @@ Statistiques </button>
                     <td>{{ $d->trimestre->annee->libelle}}</td>
                  
                     <td> 
-                             <a href="" class="btn btn-sm btn-info"> <i class="fa fa-edit"></i> </a>
+                             <a href="{{ route("autre.detailsfq", ["id" => $d->id])}}" class="btn btn-sm btn-info"> <i class="fa fa-edit"></i> </a>
                              <form action="{{ route('formation_continue.destroy', $d->id) }}" method="POST" onsubmit="return confirm('Etes vous sûr de vouloir supprimer cette ligne ?');">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-sm btn-danger"> <i class="fas fa-trash fa-xs"></i>  </button>
             </form> 
                        
-                             <form action="{{ route('formation_continue.destroy', $d->id) }}" method="POST" onsubmit="return confirm('Etes vous sûr de vouloir supprimer cette ligne ?');">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-sm btn-danger"> <i class="fas fa-trash fa-xs"></i>  </button>
-            </form> 
+                        
+         
                        
                         
                     </td>

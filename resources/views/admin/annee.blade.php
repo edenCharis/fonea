@@ -19,6 +19,9 @@
 
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  
+  <!-- SweetAlert2 for confirmation dialogs -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -67,19 +70,15 @@
 
             <div class="card">
               <div class="card-header">
-               
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addYearModal">
-                    <i class="fa fa-plus" ></i>
-        Ajouter
-    </button>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addYearModal">
+                    <i class="fa fa-plus"></i> Ajouter
+                </button>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
                 <table id="example1" class="table table-bordered table-striped">
                   <thead>
                   <tr>
-                 
-                   
                     <th>Libelle Année</th>
                     <th>Actions</th>
                   </tr>
@@ -88,21 +87,18 @@
                     @forelse ($data as $d)  
                   <tr>
                     <td>{{ $d->libelle}}</td>
-                 
-
                     <td> 
-                             <a href="" class="btn btn-sm btn-info"> <i class="fa fa-edit"></i> </a>
-                             <a href="" class="btn btn-sm btn-danger"> <i class="fa fa-trash"></i> </a>
-                        
+                        <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ $d->id }}, '{{ $d->libelle }}')">
+                            <i class="fa fa-trash"></i>
+                        </button>
                     </td>
                   </tr>
                   @empty
-                 
+                  <tr>
+                    <td colspan="2" class="text-center">Aucune année trouvée</td>
+                  </tr>
                   @endforelse
-                
-              
                   </tbody>
-                 
                 </table>
               </div>
               <!-- /.card-body -->
@@ -116,39 +112,70 @@
       <!-- /.container-fluid -->
     </section>
     <!-- /.content -->
-    <div id="sessionModal" class="modal">
-        <div class="modal-content">
-            <h3 id="modalTitle"></h3>
-            <p id="modalMessage"></p>
-            <button class="close-btn" data-close>Close</button>
+
+    <!-- Success/Error Modal -->
+    <div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sessionModalLabel">
+                        {{ session('status') === 'success' ? 'Success' : 'Error' }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>{{ session('message') }}</p>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Auto-trigger Modal if Session is Set -->
+    @if(session('status'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var sessionModal = new bootstrap.Modal(document.getElementById('sessionModal'));
+                sessionModal.show();
+            });
+        </script>
+    @endif
+
+    <!-- Add Year Modal -->
     <div class="modal fade" id="addYearModal" tabindex="-1" aria-labelledby="addYearModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addYearModalLabel">   <i class="nav-icon fas fa-calendar"></i> Ajouter une année</h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"> </button>
+                    <h5 class="modal-title" id="addYearModalLabel">
+                        <i class="nav-icon fas fa-calendar"></i> Ajouter une année
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action=" {{ Route('traitementAnnee.store')}}" method="POST">
+                <form action="{{ Route('traitementAnnee.store')}}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                           
+                            <label for="libelle" class="form-label">Année</label>
                             <input type="text" class="form-control" id="libelle" name="libelle" placeholder="2024" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                       
-                        <button type="submit" class="btn btn-success"> <i class="fa fa-save"></i>  Enregistrer</button>
-                       
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-save"></i> Enregistrer
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <!-- Hidden form for deletion -->
+    <form id="deleteForm" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+    </form>
+
   </div>
-</div>
   <!-- /.content-wrapper -->
  @include("admin.footer")
 
@@ -177,13 +204,13 @@
 <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
 <script>
   $(function () {
     $("#example1").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-
     
     $('#example2').DataTable({
       "paging": true,
@@ -195,31 +222,27 @@
       "responsive": true,
     });
   });
+
+  // Function to confirm deletion
+  function confirmDelete(id, libelle) {
+    Swal.fire({
+      title: 'Êtes-vous sûr?',
+      text: `Voulez-vous vraiment supprimer l'année "${libelle}"? Cette action est irréversible!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Oui, supprimer!',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Set the form action and submit
+        const deleteForm = document.getElementById('deleteForm');
+        deleteForm.action = `/traitementAnnee/${id}`;
+        deleteForm.submit();
+      }
+    });
+  }
 </script>
-
-<script>
-       
-        const sessionModal = document.getElementById('sessionModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalMessage = document.getElementById('modalMessage');
-        const closeModalBtn = document.querySelector('[data-close]');
-
-        
-        const sessionStatus = "{{ session('status') }}";
-        const sessionMessage = "{{ session('message') }}";
-
-     
-        if (sessionStatus && sessionMessage) {
-            modalTitle.textContent = sessionStatus === 'success' ? 'Success' : 'Error';
-            modalMessage.textContent = sessionMessage;
-            modalMessage.className = sessionStatus;
-            sessionModal.classList.add('active');
-        }
-
-        
-        closeModalBtn.addEventListener('click', () => {
-            sessionModal.classList.remove('active');
-        });
-    </script>
 </body>
 </html>

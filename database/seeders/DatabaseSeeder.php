@@ -6,8 +6,7 @@ use App\Models\User;
 use App\Models\direction;
 use App\Models\role;
 use App\Models\Annee;
-use App\Models\Annee;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -18,16 +17,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+       /* User::factory(10)->create();
 
         $this->call([
-           //SecteursTableSeeder::class,
-            //MetiersTableSeeder::class,
-            //CompetencesTableSeeder::class
+           SecteursTableSeeder::class,
+            MetiersTableSeeder::class,
+            CompetencesTableSeeder::class
         ]);
-
-
-      /* Direction::insert([
+       Direction::insert([
             [
                 'libelle' => "Direction des services informatiques et de la prospective",
                 'code' => "DSIP",
@@ -61,13 +58,12 @@ class DatabaseSeeder extends Seeder
             'role' => "administrateur",
             'direction' => "DSIP"
             
-        ]);*/
-        ]);*/
+        ]);
 
        
+*/
 
-
-      Role::insert([
+      role::insert([
         [
             'name' => "Agent DSIP"
         
@@ -85,31 +81,16 @@ class DatabaseSeeder extends Seeder
             'name' => "Agent DCB"
         ],
         [
-            'name' => "directeur"
+            'name' => "Directeur"
         ],
         [
-            'name' => "directeur"
-        ],
-        [
-            'name' => "directeur général"
+            'name' => "Directeur général"
         ],
         [
             'name' => "Délégué au Contrôle Budgetaire"
         ],
     ]);
 
-   /*  Annee::insert([
-        [
-            'libelle' => "2024"
-        ],
-        [
-            'name' => "2025"
-        ],
-
-
-
-      
-    ]);*/
 
      Annee::insert([
         [
@@ -118,14 +99,7 @@ class DatabaseSeeder extends Seeder
         [
             'name' => "2025"
         ],
-
-
-
       
     ]);
-
-
-
-        
     }
 }

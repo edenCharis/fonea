@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class formationContinueController extends Controller
 {
@@ -76,7 +77,8 @@ journalActivites::create(attributes: [
  "statut" => "Budgetisé",
  "type" => "Formation continue",
  "direction" => $util->direction,
- "user_id" => Auth::id()
+ "user_id" => Auth::id(),
+ "date_enregistrement" => Carbon::now(),
 ]);
 
 $record = activites::select("id")
@@ -97,7 +99,8 @@ journalActivites::create([
  "statut" => "Non Budgetisé",
  "type" => "Formation continue",
  "direction" => $util->direction,
- "user_id" =>Auth::id()
+ "user_id" =>Auth::id(),
+ "date_enregistrement" => Carbon::now()
 ]);
 }
 

@@ -44,7 +44,7 @@ class odsController extends Controller
 
             return redirect()->back()->with('status', 'success')->with('message', 'opération effectuée avec succès!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('status', 'error')->with('message', 'Echec !');
+            return redirect()->back()->with('status', 'error')->with('message', $e->getMessage());
         }
     }
 
@@ -69,14 +69,29 @@ class odsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+          $ods = ods::findOrFail($id);
+        
+        $request->validate([
+            'libelle' => 'required|unique:competence,libelle,' . $id,
+            'name' => 'required|exists:direction,libelle',
+        ]);
+
+        $ods->update([
+            'libelle' => $request->libelle,
+            'direction' => $request->name,
+        ]);
+
+        return redirect()->back()->with('success', 'Competence mise à jour avec succès!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+     public function destroy(string $id)
     {
-        //
+        $ods = ods::findOrFail($id);
+        $ods->delete();
+
+        return redirect()->back()->with('success', 'Competence supprimée avec succès!');
     }
 }

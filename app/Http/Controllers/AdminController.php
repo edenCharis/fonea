@@ -57,11 +57,18 @@ class AdminController extends Controller
         return view("admin.metier",["data" => $data,"secteurs" => $data1]);
     }
 
+
+    public function profil (){
+        return view("admin.compte");
+    }
+
+
     public function competence()
     {
         $data = competence::all();
+        $qualifications = qualification::all();
         
-        return view("admin.competence",["data" => $data]);
+        return view("admin.competence",["data" => $data, "qualifications"=> $qualifications]);
     }
 
     public function qualification()

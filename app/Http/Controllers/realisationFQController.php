@@ -73,9 +73,36 @@ class realisationFQController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, string $id)
     {
         //
+          $request->validate([
+            'ndi' => 'required|min:1',
+            'ndf' => 'required|min:1',
+            'decrochage' => 'required|min:0',
+            'form_qual_id' => 'required|exists:formation_qual,id'
+        ]);
+    
+        try {
+
+            $realisation = realisationFQ::findOrFail($id);
+            $realisation->update([
+                'formation_qual_id' => $request->form_qual_id,
+                'decrochage' => $request->decrochage,
+                'ndf' => $request->ndf,
+                'ndi' => $request->input("ndi") 
+            ]);
+    
+            Log::channel('user_actions')->info('Update', [
+                'user_id' => Auth::id(),
+                'action'  => 'Update Realisation FQ',
+                'data'    => $request->all(),
+            ]);
+            return redirect()->back()->with('message', 'Modification effectuée avec succès!');
+        } catch (\Exception $e) {
+            
+            return redirect()->back()->with('status', 'error')->with('message', $e->getMessage());
+        }
     }
 
     /**
@@ -84,6 +111,7 @@ class realisationFQController extends Controller
     public function update(Request $request, string $id)
     {
         //
+
     }
 
     /**

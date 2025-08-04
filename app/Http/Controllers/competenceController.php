@@ -2,40 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\competence;
+use App\Models\Competence;
 use Illuminate\Http\Request;
 
-class competenceController extends Controller
+class CompetenceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $competences = Competence::with('qualification')->get();
+        return view('competence', compact('competences'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
-        //
         $request->validate([
             'libelle' => 'required|unique:competence,libelle',
+            'qualification_id' => 'required|exists:qualification,id',
         ]);
 
-        competence::create($request->only('libelle'));
+        Competence::create([
+            'libelle' => $request->libelle,
+            'qualification_id' => $request->qualification_id,
+        ]);
 
-        return redirect()->back()->with('success', 'Competence Crée avec succès!');
+        return redirect()->back()->with('success', 'Competence créée avec succès!');
     }
 
     /**
@@ -43,7 +41,8 @@ class competenceController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $competence = Competence::with('qualification')->findOrFail($id);
+        return view('competences.show', compact('competence'));
     }
 
     /**
@@ -51,7 +50,8 @@ class competenceController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $competence = Competence::findOrFail($id);
+        return view('competences.edit', compact('competence'));
     }
 
     /**
@@ -59,7 +59,19 @@ class competenceController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $competence = Competence::findOrFail($id);
+        
+        $request->validate([
+            'libelle' => 'required|unique:competence,libelle,' . $id,
+            'qualification_id' => 'required|exists:qualification,id',
+        ]);
+
+        $competence->update([
+            'libelle' => $request->libelle,
+            'qualification_id' => $request->qualification_id,
+        ]);
+
+        return redirect()->back()->with('success', 'Competence mise à jour avec succès!');
     }
 
     /**
@@ -67,6 +79,9 @@ class competenceController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $competence = Competence::findOrFail($id);
+        $competence->delete();
+
+        return redirect()->back()->with('success', 'Competence supprimée avec succès!');
     }
 }

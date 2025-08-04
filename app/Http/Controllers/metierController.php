@@ -71,6 +71,20 @@ class metierController extends Controller
     public function update(Request $request, string $id)
     {
         //
+
+      $metier = metier::findOrFail($id);
+        
+      $request->validate([
+            'libelle' => 'required|unique:metier,libelle,',
+            'secteur_id' => 'required|exists:secteur,id',
+        ]);
+
+      $metier->update([
+            'libelle' => $request->libelle,
+            'secteur_id' => $request->secteur_id,
+        ]);
+
+        return redirect()->back()->with('success', 'métier mise à jour avec succès!');
     }
 
     /**
@@ -79,5 +93,15 @@ class metierController extends Controller
     public function destroy(string $id)
     {
         //
+
+        $record = metier::find($id);
+        if (!$record) {
+            return redirect()->back()->with('error', 'Ligne non trouvée.');
+        }
+
+        // Delete the record
+        $record->delete();
+
+        return redirect()->back()->with('success', 'Ligne supprimée avec succès.');
     }
 }

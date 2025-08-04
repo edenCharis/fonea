@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class journalActivites extends Model
 {
     //
-    protected $fillable = ['libelle', 'type','trimestre_id','direction','user_id','statut'];
+    protected $fillable = ['libelle', 'type','trimestre_id','direction','user_id','statut', 'date_enregistrement'];
 
     public $timestamps = false;
     protected $table = 'journal_activites';

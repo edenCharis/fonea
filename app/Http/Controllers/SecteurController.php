@@ -30,7 +30,6 @@ class SecteurController extends Controller
     public function store(Request $request)
     {
         //
-
         $request->validate([
             'libelle' => 'required|unique:secteur,libelle',
         ]);
@@ -62,7 +61,17 @@ class SecteurController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+         $request->validate([
+        'libelle' => 'required|string|max:255|unique:secteur,libelle,' . $id,
+    ]);
+
+    $secteur = Secteur::findOrFail($id);
+    $secteur->update([
+        'libelle' => $request->libelle,
+    ]);
+
+    return redirect()->back()->with('status', 'success')->with('message', 'Secteur modifié avec succès!');
+
     }
 
     /**
@@ -70,6 +79,10 @@ class SecteurController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+         $secteur = Secteur::findOrFail($id);
+    $secteur->delete();
+    
+    return redirect()->back()->with('status', 'success')->with('message', 'Secteur supprimé avec succès!');
+
     }
 }

@@ -67,6 +67,19 @@ class TrimestreController extends Controller
     public function update(Request $request, string $id)
     {
         //
+           $trimestre = trimestre::findOrFail($id);
+        
+      $request->validate([
+            'libelle' => 'required|unique:trimestre,libelle,',
+            'annee_id' => 'required|exists:annee,id',
+        ]);
+
+      $trimestre->update([
+            'libelle' => $request->libelle,
+            'metier_id' => $request->metier_id,
+        ]);
+
+        return redirect()->back()->with('success', 'trimestre mise à jour avec succès!');
     }
 
     /**
@@ -75,5 +88,10 @@ class TrimestreController extends Controller
     public function destroy(string $id)
     {
         //
+
+        $trimestre = trimestre::findOrFail($id);
+       $trimestre->delete();
+    
+        return redirect()->back()->with('status', 'success')->with('message', 'trimestre supprimé avec succès!');
     }
 }

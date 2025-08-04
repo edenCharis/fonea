@@ -27,16 +27,15 @@ Route::name("administrateur.")->middleware(CheckDirection::class.':DSIP' )->grou
     Route::get('qualification', [AdminController::class,'qualification'])->name("qualification")->middleware("auth");
     Route::get('directions', [AdminController::class,'direction'])->name("direction")->middleware("auth");
     Route::get('offre', [AdminController::class,'ods'])->name("offre")->middleware("auth");
-  
+    Route::get('profil', [AdminController::class,'profil'])->name("profil")->middleware("auth");
   });
 
-
-
-  
 
 Route::name("autre.")->middleware("auth")->group(function () { 
     Route::get('autre', [AutreController::class,'index'])->name("autre")->middleware("auth");
     Route::get('formationQualifiante', [AutreController::class,'formationQualifiante'])->name("formationQualifiante")->middleware(CheckDirection::class.':DE,DSIP',"auth");
+      Route::get('editformqual', [AutreController::class,'editformqual'])->name("editformqual")->middleware(CheckDirection::class.':DE,DSIP',"auth");
+   
     Route::get('formationContinue', [AutreController::class,'formationContinue'])->name("formationContinue")->middleware(CheckDirection::class.':DE,DSIP',"auth");
     Route::get('ped', [AutreController::class,'ped'])->name("ped")->middleware(CheckDirection::class.':DE,DSIP',"auth");
     Route::get('compte', [AutreController::class,'compte'])->name("compte")->middleware(CheckDirection::class.':DE,DSIP,DEAP,DA',"auth");
@@ -63,8 +62,6 @@ Route::middleware("auth")->group(function () {
   Route::resource('traitementQualification', qualificationController::class)->middleware(CheckDirection::class.':DSIP');
   Route::resource('utilisateur', utilisateurController::class)->middleware(CheckDirection::class.':DSIP');
   Route::resource('direction', directionController::class)->middleware(CheckDirection::class.':DSIP');
-
-
   // Traitement pour les autres rôles
   Route::resource('formation_qualifiante', formationQualController::class)->middleware(CheckDirection::class.':DE,DSIP');
   Route::resource('detailsFQ', detailsFQController::class)->middleware(CheckDirection::class.':DE,DSIP');

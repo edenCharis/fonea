@@ -19,6 +19,9 @@
 
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  
+  <!-- SweetAlert2 for confirmation dialogs -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -75,10 +78,8 @@
                 <table id="example1" class="table table-bordered table-striped">
                   <thead>
                   <tr>
-                 
-                   
                     <th>Libelle Trimestre</th>
-                    <th>Annee</th>
+                    <th>Année</th>
                     <th>Actions</th>
                   </tr>
                   </thead>
@@ -87,21 +88,21 @@
                   <tr>
                     <td>{{ $d->libelle}}</td>
                     <td>{{ $d->annee->libelle}}</td>
-                 
-
                     <td> 
-                             <a href="" class="btn btn-sm btn-info"> <i class="fa fa-edit"></i> </a>
-                             <a href="" class="btn btn-sm btn-danger"> <i class="fa fa-trash"></i> </a>
-                        
+                        <button class="btn btn-sm btn-info" onclick="editTrimestre({{ $d->id }}, '{{ $d->libelle }}', {{ $d->annee_id }})" data-bs-toggle="modal" data-bs-target="#editModal">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ $d->id }}, '{{ $d->libelle }}')">
+                            <i class="fa fa-trash"></i>
+                        </button>
                     </td>
                   </tr>
                   @empty
-                 
+                  <tr>
+                    <td colspan="3" class="text-center">Aucun trimestre trouvé</td>
+                  </tr>
                   @endforelse
-                
-              
                   </tbody>
-                 
                 </table>
               </div>
               <!-- /.card-body -->
@@ -113,9 +114,6 @@
         <!-- /.row -->
       </div>
       <!-- /.container-fluid -->
-
-
-
 
 <!-- Success/Error Modal -->
 <div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalLabel" aria-hidden="true">
@@ -147,38 +145,89 @@
     </section>
     <!-- /.content -->
 
+    <!-- Add Trimestre Modal -->
     <div class="modal fade" id="addTrimestreModal" tabindex="-1" aria-labelledby="addTrimestreModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addTrimestreModalLabel">  <i class="nav-icon fas fa-calendar-alt"></i> Ajouter un trimestre </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTrimestreModalLabel">
+                        <i class="nav-icon fas fa-calendar-alt"></i> Ajouter un trimestre
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="trimestreForm" method="POST" action="{{ route('traitementTrimestre.store') }}">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="annee_id" class="form-label">Sélectionnez l'année</label>
+                            <select id="annee_id" name="annee_id" class="form-select" required>
+                                <option value="" disabled selected>Choisir une année</option>
+                                @foreach($annees as $annee)
+                                    <option value="{{ $annee->id }}">{{ $annee->libelle }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Trimestre</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Entrez le libellé du trimestre" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-save"></i> Enregistrer
+                        </button>
+                    </div>
+                </form>
             </div>
-            <form id="trimestreForm" method="POST" action="{{ route('traitementTrimestre.store') }}">
-                @csrf
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="annee_id" class="form-label">Selectionnez l'année </label>
-                        <select id="annee_id" name="annee_id" class="form-select" required>
-                            <option value="" disabled selected>Selectionnez l'année</option>
-                            @foreach($annees as $annee)
-                                <option value="{{ $annee->id }}">{{ $annee->libelle }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Trimestre</label>
-                        <input type="text" id="name" name="name" class="form-control" placeholder="Entrez le libelle du trimestre" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    
-                    <button type="submit" class="btn btn-success"> <i class="fa fa-plus"></i> Enregistrer</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
+
+    <!-- Edit Trimestre Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">
+                        <i class="nav-icon fas fa-edit"></i> Modifier le trimestre
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="editForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="edit_annee_id" class="form-label">Année</label>
+                            <select id="edit_annee_id" name="annee_id" class="form-select" required>
+                                <option value="" disabled>Choisir une année</option>
+                                @foreach($annees as $annee)
+                                    <option value="{{ $annee->id }}">{{ $annee->libelle }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_name" class="form-label">Trimestre</label>
+                            <input type="text" id="edit_name" name="libelle" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-save"></i> Mettre à jour
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden form for deletion -->
+    <form id="deleteForm" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+    </form>
+
   </div>
   <!-- /.content-wrapper -->
  @include("admin.footer")
@@ -208,6 +257,7 @@
 <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
 <script>
   $(function () {
     $("#example1").DataTable({
@@ -224,6 +274,34 @@
       "responsive": true,
     });
   });
+
+  // Function to populate edit modal
+  function editTrimestre(id, libelle, anneeId) {
+    document.getElementById('edit_name').value = libelle;
+    document.getElementById('edit_annee_id').value = anneeId;
+    document.getElementById('editForm').action = `/traitementTrimestre/${id}`;
+  }
+
+  // Function to confirm deletion
+  function confirmDelete(id, libelle) {
+    Swal.fire({
+      title: 'Êtes-vous sûr?',
+      text: `Voulez-vous vraiment supprimer le trimestre "${libelle}"? Cette action est irréversible!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Oui, supprimer!',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Set the form action and submit
+        const deleteForm = document.getElementById('deleteForm');
+        deleteForm.action = `/traitementTrimestre/${id}`;
+        deleteForm.submit();
+      }
+    });
+  }
 </script>
 </body>
 </html>

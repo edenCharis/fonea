@@ -68,7 +68,19 @@ class qualificationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+         $qualification = qualification::findOrFail($id);
+        
+      $request->validate([
+            'libelle' => 'required|unique:metier,libelle,',
+            'metier_id' => 'required|exists:metier,id',
+        ]);
+
+      $qualification->update([
+            'libelle' => $request->libelle,
+            'metier_id' => $request->metier_id,
+        ]);
+
+        return redirect()->back()->with('success', 'qualification mise à jour avec succès!');
     }
 
     /**

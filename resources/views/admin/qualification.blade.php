@@ -19,6 +19,9 @@
 
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  
+  <!-- SweetAlert2 for confirmation dialogs -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -75,8 +78,6 @@
                 <table id="example1" class="table table-bordered table-striped">
                   <thead>
                   <tr>
-                 
-                   
                     <th>Qualification</th>
                     <th>Métier</th>
                     <th>Actions</th>
@@ -87,21 +88,21 @@
                   <tr>
                     <td>{{ $d->libelle}}</td>
                     <td>{{ $d->metier->libelle}}</td>
-                 
-
                     <td> 
-                             <a href="" class="btn btn-sm btn-info"> <i class="fa fa-edit"></i> </a>
-                             <a href="" class="btn btn-sm btn-danger"> <i class="fa fa-trash"></i> </a>
-                        
+                        <button class="btn btn-sm btn-info" onclick="editQualification({{ $d->id }}, '{{ $d->libelle }}', {{ $d->metier_id }})" data-bs-toggle="modal" data-bs-target="#editModal">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ $d->id }}, '{{ $d->libelle }}')">
+                            <i class="fa fa-trash"></i>
+                        </button>
                     </td>
                   </tr>
                   @empty
-                 
+                  <tr>
+                    <td colspan="3" class="text-center">Aucune qualification trouvée</td>
+                  </tr>
                   @endforelse
-                
-              
                   </tbody>
-                 
                 </table>
               </div>
               <!-- /.card-body -->
@@ -114,16 +115,13 @@
       </div>
       <!-- /.container-fluid -->
 
-
-
-
 <!-- Success/Error Modal -->
 <div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="sessionModalLabel">
-                    {{ session('status') === 'success' ? 'Success' : 'error' }}
+                    {{ session('status') === 'success' ? 'Success' : 'Error' }}
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -147,38 +145,89 @@
     </section>
     <!-- /.content -->
 
- <div class="modal fade" id="addTrimestreModal" tabindex="-1" aria-labelledby="addTrimestreModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addTrimestreModalLabel">   <i class="nav-icon fas fa-graduation-cap"></i> Ajouter une qualification  </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Add Qualification Modal -->
+    <div class="modal fade" id="addTrimestreModal" tabindex="-1" aria-labelledby="addTrimestreModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTrimestreModalLabel">
+                        <i class="nav-icon fas fa-graduation-cap"></i> Ajouter une qualification
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="trimestreForm" method="POST" action="{{ route('traitementQualification.store') }}">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="metier_id" class="form-label">Sélectionnez le métier</label>
+                            <select id="metier_id" name="metier_id" class="form-select" required>
+                                <option value="" disabled selected>Choisir un métier</option>
+                                @foreach($metiers as $s)
+                                    <option value="{{ $s->id }}">{{ $s->libelle }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Qualification</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Entrez la qualification" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-save"></i> Enregistrer
+                        </button>
+                    </div>
+                </form>
             </div>
-            <form id="trimestreForm" method="POST" action="{{ route('traitementQualification.store') }}">
-                @csrf
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="annee_id" class="form-label">Selectionnez le métier </label>
-                        <select id="secteur_id" name="metier_id" class="form-select" required>
-                            <option value="" disabled selected></option>
-                            @foreach($metiers as $s)
-                                <option value="{{ $s->id }}">{{ $s->libelle }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Qualification</label>
-                        <input type="text" id="name" name="name" class="form-control" placeholder="Entrez la qualification" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    
-                    <button type="submit" class="btn btn-success"> <i class="fa fa-plus"></i> Enregistrer</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
+
+    <!-- Edit Qualification Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">
+                        <i class="nav-icon fas fa-edit"></i> Modifier la qualification
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="editForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="edit_metier_id" class="form-label">Métier</label>
+                            <select id="edit_metier_id" name="metier_id" class="form-select" required>
+                                <option value="" disabled>Choisir un métier</option>
+                                @foreach($metiers as $s)
+                                    <option value="{{ $s->id }}">{{ $s->libelle }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_name" class="form-label">Qualification</label>
+                            <input type="text" id="edit_name" name="libelle" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-save"></i> Mettre à jour
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden form for deletion -->
+    <form id="deleteForm" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+    </form>
+
   </div>
   <!-- /.content-wrapper -->
  @include("admin.footer")
@@ -208,6 +257,7 @@
 <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
 <script>
   $(function () {
     $("#example1").DataTable({
@@ -224,6 +274,34 @@
       "responsive": true,
     });
   });
+
+  // Function to populate edit modal
+  function editQualification(id, libelle, metierId) {
+    document.getElementById('edit_name').value = libelle;
+    document.getElementById('edit_metier_id').value = metierId;
+    document.getElementById('editForm').action = `/traitementQualification/${id}`;
+  }
+
+  // Function to confirm deletion
+  function confirmDelete(id, libelle) {
+    Swal.fire({
+      title: 'Êtes-vous sûr?',
+      text: `Voulez-vous vraiment supprimer la qualification "${libelle}"? Cette action est irréversible!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Oui, supprimer!',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Set the form action and submit
+        const deleteForm = document.getElementById('deleteForm');
+        deleteForm.action = `/traitementQualification/${id}`;
+        deleteForm.submit();
+      }
+    });
+  }
 </script>
 </body>
 </html>

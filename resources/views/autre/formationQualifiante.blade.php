@@ -76,10 +76,6 @@
   <button type="button" class="btn btn-sm  btn-warning" data-bs-toggle="modal" data-bs-target="#add2">
   <i class="fas fa-rocket"></i>
 Réalisations </button>
-
-<button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#add3">
-<i class="fas fa-chart-line"></i>
-Statistiques </button>
               </div>
               <!-- /.card-header -->
               <div class="card-body">

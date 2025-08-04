@@ -19,6 +19,9 @@
 
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  
+  <!-- SweetAlert2 for confirmation dialogs -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -78,8 +81,6 @@
                 <table id="example1" class="table table-bordered table-striped">
                   <thead>
                   <tr>
-                 
-                   
                     <th>Compétence</th>
                     <th>Qualification</th>
                     <th>Actions</th>
@@ -90,21 +91,21 @@
                   <tr>
                     <td>{{ $d->libelle}}</td>
                     <td>{{ $d->qualification->libelle}}</td>
-                 
-
                     <td> 
-                             <a href="" class="btn btn-sm btn-info"> <i class="fa fa-edit"></i> </a>
-                             <a href="" class="btn btn-sm btn-danger"> <i class="fa fa-trash"></i> </a>
-                        
+                        <button class="btn btn-sm btn-info" onclick="editCompetence({{ $d->id }}, '{{ $d->libelle }}', {{ $d->qualification_id }})" data-toggle="modal" data-target="#editModal">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ $d->id }}, '{{ $d->libelle }}')">
+                            <i class="fa fa-trash"></i>
+                        </button>
                     </td>
                   </tr>
                   @empty
-                 
+                  <tr>
+                    <td colspan="3" class="text-center">Aucune compétence trouvée</td>
+                  </tr>
                   @endforelse
-                
-              
                   </tbody>
-                 
                 </table>
               </div>
               <!-- /.card-body -->
@@ -118,6 +119,8 @@
       <!-- /.container-fluid -->
     </section>
     <!-- /.content -->
+    
+    <!-- Session Modal -->
     <div id="sessionModal" class="modal">
         <div class="modal-content">
             <h3 id="modalTitle"></h3>
@@ -125,30 +128,90 @@
             <button class="close-btn" data-close>Close</button>
         </div>
     </div>
+    
+    <!-- Add Competence Modal -->
     <div class="modal fade" id="addYearModal" tabindex="-1" aria-labelledby="addYearModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addYearModalLabel">     <i class="nav-icon fas fa-lightbulb"></i>  Ajouter une compétence </h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"> </button>
+                    <h5 class="modal-title" id="addYearModalLabel">
+                        <i class="nav-icon fas fa-lightbulb"></i> Ajouter une compétence 
+                    </h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action=" {{ Route('traitementCompetence.store')}}" method="POST">
+                <form action="{{ Route('traitementCompetence.store')}}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                           
+                            <label for="libelle" class="form-label">Libellé de la compétence</label>
                             <input type="text" class="form-control" id="libelle" name="libelle" placeholder="Travail d'équipe" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="qualification_id" class="form-label">Qualification</label>
+                            <select class="form-control" id="qualification_id" name="qualification_id" required>
+                                <option value="">Sélectionner une qualification</option>
+                                @foreach($qualifications as $qualification)
+                                    <option value="{{ $qualification->id }}">{{ $qualification->libelle }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
-                       
-                        <button type="submit" class="btn btn-success"> <i class="fa fa-save"></i>  Enregistrer</button>
-                       
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-save"></i> Enregistrer
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <!-- Edit Competence Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">
+                        <i class="nav-icon fas fa-edit"></i> Modifier la compétence
+                    </h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="editForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="edit_libelle" class="form-label">Libellé de la compétence</label>
+                            <input type="text" class="form-control" id="edit_libelle" name="libelle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_qualification_id" class="form-label">Qualification</label>
+                            <select class="form-control" id="edit_qualification_id" name="qualification_id" required>
+                                <option value="">Sélectionner une qualification</option>
+                                @foreach($qualifications as $qualification)
+                                    <option value="{{ $qualification->id }}">{{ $qualification->libelle }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-save"></i> Mettre à jour
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden form for deletion -->
+    <form id="deleteForm" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+    </form>
+
   </div>
 </div>
   <!-- /.content-wrapper -->
@@ -179,6 +242,7 @@
 <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
 <script>
   $(function () {
     $("#example1").DataTable({
@@ -195,31 +259,54 @@
       "responsive": true,
     });
   });
+
+  // Function to populate edit modal
+  function editCompetence(id, libelle, qualificationId) {
+    document.getElementById('edit_libelle').value = libelle;
+    document.getElementById('edit_qualification_id').value = qualificationId;
+    document.getElementById('editForm').action = `traitementCompetence/${id}`;
+  }
+
+  // Function to confirm deletion
+  function confirmDelete(id, libelle) {
+    Swal.fire({
+      title: 'Êtes-vous sûr?',
+      text: `Voulez-vous vraiment supprimer la compétence "${libelle}"? Cette action est irréversible!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Oui, supprimer!',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Set the form action and submit
+        const deleteForm = document.getElementById('deleteForm');
+        deleteForm.action = `/traitementCompetence/${id}`;
+        deleteForm.submit();
+      }
+    });
+  }
+
+  // Session modal functionality
+  const sessionModal = document.getElementById('sessionModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalMessage = document.getElementById('modalMessage');
+  const closeModalBtn = document.querySelector('[data-close]');
+
+  const sessionStatus = "{{ session('status') }}";
+  const sessionMessage = "{{ session('message') }}";
+
+  if (sessionStatus && sessionMessage) {
+    modalTitle.textContent = sessionStatus === 'success' ? 'Success' : 'Error';
+    modalMessage.textContent = sessionMessage;
+    modalMessage.className = sessionStatus;
+    sessionModal.classList.add('active');
+  }
+
+  closeModalBtn.addEventListener('click', () => {
+    sessionModal.classList.remove('active');
+  });
 </script>
-
-<script>
-       
-        const sessionModal = document.getElementById('sessionModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalMessage = document.getElementById('modalMessage');
-        const closeModalBtn = document.querySelector('[data-close]');
-
-        
-        const sessionStatus = "{{ session('status') }}";
-        const sessionMessage = "{{ session('message') }}";
-
-     
-        if (sessionStatus && sessionMessage) {
-            modalTitle.textContent = sessionStatus === 'success' ? 'Success' : 'Error';
-            modalMessage.textContent = sessionMessage;
-            modalMessage.className = sessionStatus;
-            sessionModal.classList.add('active');
-        }
-
-        
-        closeModalBtn.addEventListener('click', () => {
-            sessionModal.classList.remove('active');
-        });
-    </script>
 </body>
 </html>

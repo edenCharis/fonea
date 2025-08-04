@@ -66,7 +66,22 @@ class directionController extends Controller
     public function update(Request $request, string $id)
     {
         //
+
+         $direction = direction::findOrFail($id);
+        
+        $request->validate([
+            'libelle' => 'required|unique:direction,libelle,' . $id,
+            'code' => 'required',
+        ]);
+
+        $direction->update([
+            'libelle' => $request->libelle,
+            'code' => $request->code,
+        ]);
+
+        return redirect()->back()->with('success', 'Direction mise à jour avec succès!');
     }
+    
 
     /**
      * Remove the specified resource from storage.

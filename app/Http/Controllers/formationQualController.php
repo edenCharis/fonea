@@ -2,57 +2,43 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\formationQual;
 use App\Models\journalActivites;
 use App\Models\activites;
-use App\Models\user;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
 use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-
 use Illuminate\Support\Facades\Log;
-
 
 class formationQualController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
-
-     use AuthorizesRequests;
-
-  
-
-     private $sequenceFile = 'sequence.txt';
     public function index()
     {
-        //
+        // Implementation needed
     }
 
-    
-
-
- 
-    public function generateSequentialCode()
+    /**
+     * Generate a sequential code for formation qualification
+     */
+    private function generateSequentialCode()
     {
-        
-        $lastCode = DB::table('formation_qual') 
-        ->orderBy('id', 'desc') 
-        ->value('numero_identification'); 
+        $lastCode = DB::table('formation_qual')
+            ->orderBy('id', 'desc')
+            ->value('numero_identification');
 
-    
-    $lastSequence = $lastCode ? (int)substr($lastCode, 8) : 0;
+        $lastSequence = $lastCode ? (int)substr($lastCode, 8) : 0;
+        $nextSequence = $lastSequence + 1;
+        $uniqueCode = 'FORMQUAL' . str_pad($nextSequence, 4, '0', STR_PAD_LEFT);
 
-    $nextSequence = $lastSequence + 1;
-
-    $uniqueCode = 'FORMQUAL' . str_pad($nextSequence, 4, '0', STR_PAD_LEFT);
-
-    return $uniqueCode;
+        return $uniqueCode;
     }
 
     /**
@@ -60,7 +46,7 @@ class formationQualController extends Controller
      */
     public function create()
     {
-        //
+        // Implementation needed
     }
 
     /**
@@ -68,84 +54,76 @@ class formationQualController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'trimestre_id' => 'required|exists:trimestre,id',
+        ]);
 
-      
+        $user = $request->user();
 
+        try {
+            // Check if activity exists (case-insensitive)
+            $activityExists = DB::table('activites')
+                ->whereRaw('LOWER(libelle) = ?', [strtolower($request->name)])
+                ->exists();
 
-$date = Carbon::now()->format('Y-m-d');
-echo $date; // Outputs: 2025-04-11 (or the current date)
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'trimestre_id' => 'required|exists:trimestre,id',
+            // Get user direction
+            $userDirection = User::select('direction')
+                ->where('id', $user->id)
+                ->firstOrFail();
+
+            // Create journal entry based on activity existence
+            if ($activityExists) {
+                journalActivites::create([
+                    'libelle' => $request->name,
+                    'trimestre_id' => $request->trimestre_id,
+                    'statut' => 'Budgetisé',
+                    'type' => 'Formation qualifiante',
+                    'direction' => $userDirection->direction,
+                    'user_id' => $user->id,
+                    'date_enregistrement' => Carbon::now(),
+                ]);
+
+                // Update activity status to "Executé"
+                $activity = activites::whereRaw('LOWER(libelle) = ?', [strtolower($request->name)])
+                    ->firstOrFail();
+                $activity->update(['statut' => 'Executé']);
+            } else {
+                journalActivites::create([
+                    'libelle' => $request->name,
+                    'trimestre_id' => $request->trimestre_id,
+                    'statut' => 'Non Budgetisé',
+                    'type' => 'Formation qualifiante',
+                    'direction' => $userDirection->direction,
+                    'user_id' => $user->id,
+                    'date_enregistrement' => Carbon::now(),
+                ]);
+            }
+
+            // Create formation qualification record
+            formationQual::create([
+                'intitule' => $request->name,
+                'trimestre_id' => $request->trimestre_id,
+                'numero_identification' => $this->generateSequentialCode(),
+                'user_id' => $user->id,
             ]);
 
-            $user = $request->user();
+            // Log the action
+            Log::channel('user_actions')->info('Création', [
+                'user_id' => Auth::id(),
+                'action' => 'Create FORM QUAL',
+                'data' => $request->all(),
+            ]);
 
-            try {
+            return redirect()->back()
+                ->with('status', 'success')
+                ->with('message', 'Opération effectuée avec succès!');
 
-
-
-                $vrai = DB::table('activites')
-                       ->whereRaw('LOWER(libelle) = ?', [strtolower($request->name)])
-                       ->exists();
-
-
-               $util = User::select("direction")->whereRaw("id=?", $user->id)->firstOrFail();
-
-
-    if($vrai){
-
-        journalActivites::create([
-            "libelle" => $request->name,
-            "trimestre_id" =>$request->trimestre_id,
-            "statut" => "Budgetisé",
-            "type" => "Formation qualifiante",
-            "direction" => $util->direction,
-            "user_id" => $user->id,
-            "date_enregistrement" => $date
-        ]);
-
-        $record = activites::select("id")
-        ->whereRaw('LOWER(libelle) = ?', [strtolower($request->name)])
-        ->firstOrFail();
-
-        $activite = activites::findOrFail($record->id);
-    
-        
-          $activite->update([
-              'statut' => "Executé"
-          ]);
-
-         }else{
-        journalActivites::create([
-            "libelle" => $request->name,
-            "trimestre_id" =>$request->trimestre_id,
-            "statut" => "Non Budgetisé",
-            "type" => "Formation qualifiante",
-            "direction" => $util->direction,
-            "user_id" => $user->id,
-            "date_enregistrement" => $date
-        ]);
-    }
-
-                formationQual::create([
-                    'intitule' => $request->name,
-                    'trimestre_id' => $request->trimestre_id,
-                    'numero_identification'=> $this->generateSequentialCode(),
-                    'user_id'=> $user->id,
-                ]);
-                Log::channel('user_actions')->info('Création', [
-                    'user_id' => Auth::id(),
-                    'action'  => 'Create FORM QUAL',
-                    'data'    => $request->all()
-                ]);
-     
-                return redirect()->back()->with('status', 'succes')->with('message', 'opération effectuée avec succès!');
-            } catch (\Exception $e) {
-                return redirect()->back()->with('status', 'error')->with('message', $e->getMessage());
-            }
-      
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('status', 'error')
+                ->with('message', $e->getMessage());
+        }
     }
 
     /**
@@ -153,7 +131,7 @@ echo $date; // Outputs: 2025-04-11 (or the current date)
      */
     public function show(string $id)
     {
-        //
+        // Implementation needed
     }
 
     /**
@@ -161,7 +139,7 @@ echo $date; // Outputs: 2025-04-11 (or the current date)
      */
     public function edit(string $id)
     {
-        //
+        // Implementation needed
     }
 
     /**
@@ -169,62 +147,76 @@ echo $date; // Outputs: 2025-04-11 (or the current date)
      */
     public function update(Request $request, string $id)
     {
-        //
         $request->validate([
             'intitule' => 'required|string|max:255',
             'trimestre_id' => 'required|exists:trimestre,id',
-            
         ]);
-        try{
+
+        try {
             $record = formationQual::find($id);
+            
             if (!$record) {
-                return redirect()->back()->with('error', 'Ligne non trouvée.');
+                return redirect()->back()
+                    ->with('status', 'error')
+                    ->with('message', 'Enregistrement non trouvé.');
             }
-    
-        
-            $record->Update(["intitule" => $request->input("intitule"),
-                                "trimestre_id" => $request->input("trimestre_id")]);
 
+            $record->update([
+                'intitule' => $request->input('intitule'),
+                'trimestre_id' => $request->input('trimestre_id'),
+            ]);
 
-                                Log::channel('user_actions')->info('Mis à Jour', [
-                                    'user_id' => Auth::id(),
-                                    'action'  => 'UPDATE FORM QUAL',
-                                    'data'    => $request->all()
-                                ]);
-    
-            return redirect()->back()->with('success', 'Ligne supprimée avec succès.');
-    
-        }catch (\Exception $e) {
-            return redirect()->back()->with('status', 'error')->with('message', $e->getMessage());
+            Log::channel('user_actions')->info('Mise à jour', [
+                'user_id' => Auth::id(),
+                'action' => 'UPDATE FORM QUAL',
+                'data' => $request->all(),
+            ]);
+
+            return redirect()->back()
+                ->with('status', 'success')
+                ->with('message', 'Enregistrement mis à jour avec succès.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('status', 'error')
+                ->with('message', $e->getMessage());
         }
-
-  }
-    
-    
+    }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id,formationQual $formationQual)
+    public function destroy(string $id)
     {
-        //
-       
-        $record = formationQual::find($id);
+        try {
+            $record = formationQual::find($id);
 
-        if (!$record) {
-            return redirect()->back()->with('error', 'Ligne non trouvée.');
+            if (!$record) {
+                return redirect()->back()
+                    ->with('status', 'error')
+                    ->with('message', 'Enregistrement non trouvé.');
+            }
+
+            // Store record data for logging before deletion
+            $recordData = $record->toArray();
+            
+            // Delete the record
+            $record->delete();
+
+            Log::channel('user_actions')->info('Suppression', [
+                'user_id' => Auth::id(),
+                'action' => 'DELETE FORM QUAL',
+                'data' => $recordData,
+            ]);
+
+            return redirect()->back()
+                ->with('status', 'success')
+                ->with('message', 'Enregistrement supprimé avec succès.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('status', 'error')
+                ->with('message', $e->getMessage());
         }
-
-        // Delete the record
-        $record->delete();
-
-        Log::channel('user_actions')->info('Suppression', [
-            'user_id' => Auth::id(),
-            'action'  => 'DELETE FORM QUAL',
-            'data'    => $record
-        ]);
-
-        return redirect()->back()->with('success', 'Ligne supprimée avec succès.');
     }
-    
 }
