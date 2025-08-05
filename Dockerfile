@@ -32,5 +32,5 @@ RUN chown -R www-data:www-data /var/www \
  && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # Expose port and run Laravel
-EXPOSE 8000
-CMD php artisan serve --host=0.0.0.0 --port=8000
+EXPOSE 8080
+CMD php artisan serve --host=0.0.0.0 --port=8080
