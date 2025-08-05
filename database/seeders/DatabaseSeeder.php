@@ -49,7 +49,7 @@ class DatabaseSeeder extends Seeder
                 'libelle' => "Direction des affaires juridiques, financières et des ressources humaines",
                 'code' => "DAJFRH",
             ],
-        ]);
+        ]);*/
 
        User::factory()->create([
             'name' => 'Eden',
@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
        
-*/
+
 
       role::insert([
         [
