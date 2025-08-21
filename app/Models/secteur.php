@@ -21,6 +21,15 @@ class secteur extends Model
     {
        return $this->hasMany(ped::class);
     }
+     public function financement()
+    {
+       return $this->hasMany(financement::class);
+    }
+
+      public function formation()
+    {
+       return $this->hasMany(formation::class);
+    }
     public function detailsFQs()
     {
         return $this->hasMany(detailsFQ::class);

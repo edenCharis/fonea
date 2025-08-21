@@ -89,7 +89,36 @@ class detailsApprentissageController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'ndai' => 'required|min:1',
+            'ndaf' => 'required|min:1',
+            'operateur_formation' => 'required',
+            'apprentissage_id' => 'required|exists:apprentissage,id',
+            'qualification_id' => 'required|exists:qualification,id',
+            'secteur_id' => 'required|exists:secteur,id'
+        ]);
+
+        try {
+            $details = detailsApprentissage::findOrFail($id);
+            $details->update([
+                'apprentissage_id' => $request->apprentissage_id,
+                'qualification_id' => $request->qualification_id,
+                'secteur_id' => $request->secteur_id,
+                'ndai' => $request->input('ndai'),
+                'ndaf' => $request->input('ndaf'),
+                'operateur_formation' => $request->input('operateur_formation')
+            ]);
+
+            Log::channel('user_actions')->info('modification', [
+                'user_id' => Auth::id(),
+                'action'  => 'UPDATE detailsApprentissage',
+                'data'    => $request->all()
+            ]);
+
+            return redirect()->back()->with('message', 'Mise à jour effectuée avec succès!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('status', 'error')->with('message', $e->getMessage());
+        }
     }
 
     /**

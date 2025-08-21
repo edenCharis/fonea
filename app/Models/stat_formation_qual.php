@@ -8,7 +8,7 @@ class stat_formation_qual extends Model
 {
     //
 
-    protected $fillable = ['ndf','ndi','formation_qual_id','decrochage','trimestre_id','secteur_id','qualification_id'];
+    protected $fillable = ['ndf','ndi','formation_qual_id','decrochage','trimestre_id','secteur_nom','qualification_nom'];
     protected $table = 'stat_form_qual';
     public $timestamps = false;
 
@@ -23,11 +23,11 @@ class stat_formation_qual extends Model
     }
     public function secteur(){
         
-        return $this->belongsTo(secteur::class,"secteur_id","id");
+        return $this->belongsTo(secteur::class,"secteur_nom","libelle");
     }
 
     public function qualification(){
         
-        return $this->belongsTo(qualification::class,"qualification_id","id");
+        return $this->belongsTo(qualification::class,"qualification_nom","libelle");
     }
 }

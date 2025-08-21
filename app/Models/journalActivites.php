@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class journalActivites extends Model
 {
     //
-    protected $fillable = ['libelle', 'type','trimestre_id','direction','user_id','statut', 'date_enregistrement'];
+    protected $fillable = ['libelle','trimestre_id', 'type','annee_id','direction','user_id','statut', 'date_enregistrement'];
 
     public $timestamps = false;
     protected $table = 'journal_activites';
@@ -20,5 +20,9 @@ class journalActivites extends Model
     public function trimestre()
     {
         return $this->belongsTo(Trimestre::class);
+    }
+
+    public function User(){
+        return $this->belongsTo(User::class);
     }
 }

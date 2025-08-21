@@ -84,7 +84,34 @@ class realisationApprentissageController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'ndi' => 'required|min:1',
+            'ndf' => 'required|min:1',
+            'decrochage' => 'required|min:0',
+            'apprentissage_id' => 'required|exists:apprentissage,id'
+        ]);
+
+        try {
+            $realisation = realisationApprentissage::findOrFail($id);
+            $realisation->update([
+                'apprentissage_id' => $request->apprentissage_id,
+                'ndi' => $request->input('ndi'),
+                'ndf' => $request->input('ndf'),
+                'decrochage' => $request->input('decrochage')
+            ]);
+
+            Log::channel('user_actions')->info('Update', [
+                'user_id' => Auth::id(),
+                'action'  => 'Update realisation apprentissage',
+                'data'    => $request->all()
+            ]);
+
+            return redirect()
+                ->back()
+                ->with('message', 'Mise à jour effectuée avec succès!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('status', 'error')->with('message', $e->getMessage());
+        }
     }
 
     /**

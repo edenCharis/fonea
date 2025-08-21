@@ -75,9 +75,6 @@
   <i class="fas fa-rocket"></i>
 Réalisations </button>
 
-<button type="button" class="btn btn-sm  btn-secondary" data-bs-toggle="modal" data-bs-target="#add3">
-<i class="fas fa-chart-line"></i>
-Statistiques </button>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -146,13 +143,19 @@ Statistiques </button>
                  
                      
                     <td> 
-                             <a href="" class="btn btn-sm btn-info"> <i class="fa fa-edit fa-xs"></i> </a>
-                            <a href="" class="btn btn-sm btn-danger"> <i class="fa fa-trash fa-xs"></i> </a>
-                        
+                        <div class="btn-group" role="group">
+                          
+                            
+                            <!-- Delete Button -->
+                                            <form action="{{ route('apprentissageMetier.destroy', $d->id) }}" method="POST" onsubmit="return confirm('Etes vous sûr de vouloir supprimer cette ligne ?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-danger"> <i class="fas fa-trash fa-xs"></i>  </button>
+            </form> 
+                        </div>
                     </td>
                      </tr>
                   @endforeach
-                
               
                   </tbody>
                  
@@ -170,6 +173,8 @@ Statistiques </button>
     </section>
     <!-- /.content -->
   </div>
+
+  <!-- ADD MODALS (existing) -->
   <div class="modal fade" id="addTrimestreModal" tabindex="-1" aria-labelledby="addTrimestreModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -203,6 +208,7 @@ Statistiques </button>
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="add1" tabindex="-1" aria-labelledby="add1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -269,6 +275,7 @@ Statistiques </button>
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="add2" tabindex="-1" aria-labelledby="add2" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -314,6 +321,103 @@ Statistiques </button>
     </div>
 </div>
 
+  <!-- EDIT MODALS -->
+  
+  <!-- Edit Apprentissage Modal -->
+  <div class="modal fade" id="editApprentissageModal" tabindex="-1" aria-labelledby="editApprentissageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editApprentissageModalLabel">
+                    <i class="nav-icon fas fa-edit"></i>
+                    Modifier l'action de formation
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editApprentissageForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <input type="hidden" id="edit_apprentissage_id" name="apprentissage_id">
+                    
+                    <div class="mb-3">
+                        <label for="edit_name" class="form-label">Intitulé de l'action de formation</label>
+                        <input type="text" id="edit_name" name="name" class="form-control" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit_trimestre_id" class="form-label">Selectionnez le trimestre</label>
+                        <select id="edit_trimestre_id" name="trimestre_id" class="form-select" required>
+                            <option value="" disabled>Choisir un trimestre</option>
+                            @foreach($trimestres as $s)
+                                <option value="{{ $s->id }}">{{ $s->libelle."-".$s->annee->libelle }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Mettre à jour
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
+
+  <!-- Edit Details Modal -->
+  <div class="modal fade" id="editDetailsModal" tabindex="-1" aria-labelledby="editDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+             
+                <h5 class="modal-title" id="editDetailsModalLabel">
+                    <i class="nav-icon fas fa-info"></i>
+                    Modifier les détails de l'action
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editDetailForm" method="POST">
+                @csrf
+                @method('GET')
+                <div id="editDetailsContent">
+                    <!-- Details forms will be populated here -->
+                </div>
+                </form>
+            </div>
+     
+        </div>
+    </div>
+  </div>
+
+  <!-- Edit Realisation Modal -->
+  <div class="modal fade" id="editRealisationModal" tabindex="-1" aria-labelledby="editRealisationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h5 class="modal-title" id="editRealisationModalLabel">
+                    <i class="nav-icon fas fa-rocket"></i>
+                    Modifier les réalisations
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                              <form id="editRealisationForm" method="POST">
+                @csrf
+                @method('GET')
+                <div id="editRealisationContent">
+                    <!-- Realisation forms will be populated here -->
+                </div>
+                </form>
+            </div>
+        
+        </div>
+    </div>
+  </div>
+
 <div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -338,6 +442,7 @@ Statistiques </button>
   </aside>
   <!-- /.control-sidebar -->
 </div>
+
 <script src="plugins/jquery/jquery.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
 <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
@@ -367,12 +472,11 @@ Statistiques </button>
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.js"></script>
 
-
 <script src="plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
 <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-<script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script></script>
+<script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
 @if(session('status'))
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -381,14 +485,156 @@ Statistiques </button>
         });
     </script>
 @endif
+
 <script>
-  $(function () {
+$(function () {
     $("#example1").DataTable({
-      "responsive": true, "lengthChange": true, "autoWidth": true,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        "responsive": true, 
+        "lengthChange": true, 
+        "autoWidth": true,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-   
-  });
+});
+
+// Edit Apprentissage Function
+function editApprentissage(id, intitule, trimestreId) {
+    $('#edit_apprentissage_id').val(id);
+    $('#edit_name').val(intitule);
+    $('#edit_trimestre_id').val(trimestreId);
+    // Set the form action
+    $('#editApprentissageForm').attr('action', `/apprentissageMetier/${id}`);
+}
+
+// Edit Details Function
+function editDetails(apprentissageId, detailsData) {
+    let html = '';
+    
+    if (detailsData && detailsData.length > 0) {
+        detailsData.forEach(function(detail) {
+            html += generateDetailForm(detail);
+        });
+    } else {
+        html = '<div class="alert alert-info">Aucun détail trouvé pour cette action de formation.</div>';
+    }
+    
+    $('#editDetailsContent').html(html);
+    
+
+    $('#editDetailForm').attr('action', `/detailsApprentissage.update/${id}`);
+    
+}
+
+// Generate Detail Form HTML
+function generateDetailForm(detail) {
+    // Generate secteur options
+    let secteurOptions = '<option value="" disabled>Choisir un secteur</option>';
+    @foreach($secteurs as $secteur)
+        secteurOptions += `<option value="{{ $secteur->id }}" ${detail.secteur_id == {{ $secteur->id }} ? 'selected' : ''}>{{ $secteur->libelle }}</option>`;
+    @endforeach
+
+    // Generate qualification options
+    let qualificationOptions = '<option value="" disabled>Choisir une qualification</option>';
+    @foreach($qualification as $qual)
+        qualificationOptions += `<option value="{{ $qual->id }}" ${detail.qualification_id == {{ $qual->id }} ? 'selected' : ''}>{{ $qual->libelle }}</option>`;
+    @endforeach
+
+    return `
+          
+            <div class='row'>
+                <div class='col-md-6 mb-3'>
+                    <label class='form-label'>Secteur</label>
+                    <select name='secteur_id' class='form-select' required>
+                        ${secteurOptions}
+                    </select>
+                </div>
+                
+                <div class='col-md-6 mb-3'>
+                    <label class='form-label'>Qualification</label>
+                    <select name='qualification_id' class='form-select' required>
+                        ${qualificationOptions}
+                    </select>
+                </div>
+            </div>
+            
+            <div class='row'>
+                <div class='col-md-4 mb-3'>
+                    <label class='form-label'>Opérateur de formation</label>
+                    <input type='text' name='operateur_formation' class='form-control' 
+                           value='${detail.operateur_formation || ''}' required>
+                </div>
+                
+                <div class='col-md-4 mb-3'>
+                    <label class='form-label'>Demandeurs à former</label>
+                    <input type='number' name='ndaf' class='form-control' 
+                           value='${detail.ndaf || ''}' min='1' required>
+                </div>
+                
+                <div class='col-md-4 mb-3'>
+                    <label class='form-label'>Demandeurs à insérer</label>
+                    <input type='number' name='ndai' class='form-control' 
+                           value='${detail.ndai || ''}' min='1' required>
+                </div>
+            </div>
+            
+            <div class='text-end'>
+                <button type='submit' class='btn btn-primary btn-sm'>
+                    <i class='fa fa-save'></i> Mettre à jour
+                </button>
+            </div>
+        `;
+}
+
+// Edit Realisation Function  
+function editRealisation(apprentissageId, realisationData) {
+    let html = '';
+    
+    if (realisationData && realisationData.length > 0) {
+        realisationData.forEach(function(realisation) {
+            html += generateRealisationForm(realisation);
+        });
+    } else {
+        html = '<div class="alert alert-info">Aucune réalisation trouvée pour cette action de formation.</div>';
+    }
+    
+    $('#editRealisationContent').html(html);
+      $('#editRealisationForm').attr('action', `/realisationApprentissage.update/${id}`);
+    
+}
+
+// Generate Realisation Form HTML
+function generateRealisationForm(realisation) {
+    return `
+          <div class='row'>
+                <div class='col-md-4 mb-3'>
+                    <label class='form-label'>Demandeurs formés</label>
+                    <input type='number' name='ndf' class='form-control' 
+                           value='${realisation.ndf || ''}' min='0' required>
+                </div>
+                
+                <div class='col-md-4 mb-3'>
+                    <label class='form-label'>Demandeurs insérés</label>
+                    <input type='number' name='ndi' class='form-control' 
+                           value='${realisation.ndi || ''}' min='0' required>
+                </div>
+                
+                <div class='col-md-4 mb-3'>
+                    <label class='form-label'>Nombre de décrochages</label>
+                    <input type='number' name='decrochage' class='form-control' 
+                           value='${realisation.decrochage || ''}' min='0' required>
+                </div>
+            </div>
+            
+            <div class='text-end'>
+                <button type='submit' class='btn btn-success btn-sm'>
+                    <i class='fa fa-save'></i> Mettre à jour
+                </button>
+            </div>
+      `;
+}
+
+
+
+
 </script>
 </body>
 </html>

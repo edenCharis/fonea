@@ -35,7 +35,7 @@ class realisationTDEController extends Controller
         //
 
 
-        if($request->input("realisation") == "realisationTDE")
+        if($request->input("realisationFinancement") == "realisationTDE")
         {
             $request->validate([
                 'nipi' => 'required|min:1',
@@ -49,6 +49,8 @@ class realisationTDEController extends Controller
                 realisationTDE::create([
                     'tde_id' => $request->tde_id,
                     'nipi'=> $request->input("nipi"),
+                    
+
                 ]);
 
                 Log::channel('user_actions')->info('Create', [

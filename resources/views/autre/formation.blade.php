@@ -74,10 +74,6 @@
   <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#add2">
   <i class="fas fa-rocket"></i>
 Réalisations </button>
-
-<button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#add3">
-<i class="fas fa-chart-line"></i>
-Statistiques </button>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -86,6 +82,8 @@ Statistiques </button>
                   <tr>
                     <th>Numéro d'identification</th>
                     <th>Intitulé</th>
+                      <th>Métier</th>
+                        <th>Secteur d'activité</th>
                     <th>Personnes à formées</th>
                     <th>Personnes  formées</th>
                   
@@ -99,6 +97,19 @@ Statistiques </button>
                      <tr>
                     <td>{{ $d->numero_identification}}</td>
                     <td>{{ $d->intitule }}</td>
+                      <td>
+                   @foreach ($d->formation as $tde)
+                   <div>{{ $tde->metier->libelle }}</div>
+                   @endforeach
+                
+                    </td> 
+                      <td>
+                   
+                   @foreach ($d->formation as $tde)
+                   <div>{{ $tde->secteur->libelle }}</div>
+                   @endforeach
+                
+                    </td> 
                     <td>
                    
                    @foreach ($d->formation as $tde)
@@ -121,7 +132,9 @@ Statistiques </button>
                     <form action="{{ route('TDE.destroy', $d->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this?');">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-danger"> <i class="fas fa-trash fa-xs"></i>  </button>
+                 <button type="button" class="btn btn-danger btn-delete" data-id="{{ $d->id }}">
+        <i class="fas fa-trash fa-xs"></i>
+    </button>
             </form> 
                   </td>
                      </tr>
@@ -199,7 +212,25 @@ Statistiques </button>
                             @endforeach
                         </select>
                     </div>
-              
+               <div class="mb-3">
+                        <label for="secteur_id" class="form-label">Selectionnez le secteur </label>
+                        <select id="secteur_id" name="secteur_id" class="form-select" required>
+                            <option value="" disabled selected></option>
+                            @foreach($secteurs as $s)
+                                <option value="{{ $s->id }}">{{ $s->libelle }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                      <div class="mb-3">
+                        <label for="metier_id" class="form-label">Selectionnez le métier </label>
+                        <select id="metier_id" name="metier_id" class="form-select" required>
+                            <option value="" disabled selected></option>
+                            @foreach($metiers as $s)
+                                <option value="{{ $s->id }}">{{ $s->libelle }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                  
                     <div class="mb-3">  
                     <label for="npaf" class="form-label">Nombre de  personnes à formées</label>
                         
@@ -215,6 +246,24 @@ Statistiques </button>
             </form>
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content border-danger">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="confirmDeleteLabel"><i class="fas fa-exclamation-triangle"></i> Confirmation de suppression</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        Êtes-vous sûr de vouloir supprimer cette ligne ? Cette action est irréversible.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Supprimer</button>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="modal fade" id="add2" tabindex="-1" aria-labelledby="add2" aria-hidden="true">
     <div class="modal-dialog">
@@ -339,7 +388,23 @@ Statistiques </button>
     });
   });
 </script>
+<script>
+  let currentForm;
 
+  document.querySelectorAll('.btn-delete').forEach(button => {
+    button.addEventListener('click', function () {
+      currentForm = this.closest('form'); // store the related form
+      const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+      modal.show();
+    });
+  });
+
+  document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+    if (currentForm) {
+      currentForm.submit();
+    }
+  });
+</script>
 
 </body>
 </html>

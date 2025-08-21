@@ -41,12 +41,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h5 class="text-info">Utilisateurs</h5>
+            <h5 class="text-info">Journal d'activités des utilisateurs</h5>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Tableau de Bord</a></li>
-              <li class="breadcrumb-item active">Utilisateurs</li>
+              <li class="breadcrumb-item active">Journal d'activités</li>
             </ol>
           </div>
         </div>
@@ -61,36 +61,33 @@
 
             <div class="card">
               <div class="card-header">
-                <h4 class="card-title"> <button type="button" class="btn btn-sm btn-success"  data-toggle="modal" data-target="#addTrimestreModal">
-          <i class="fa fa-plus"></i> Ajouter</button>
-</h4>
-              </div>
+                   </div>
               <!-- /.card-header -->
               <div class="card-body">
                 <table id="example1" class="table table-bordered table-striped">
                   <thead>
                   <tr>
                  
-                    <th>Nom(s)</th>
-                    <th>Email</th>
-                    <th>Rôle</th>
+                    <th>Activité</th>
+                    <th>Statut</th>
+                    <th>Type</th>
                     <th>Direction</th>
-                    <th>Actions</th>
+                    <th>Trimestre</th>
+                    <th>Utilisateur</th>
+                    <th>Date d'enregistrement</th>
                   </tr>
                   </thead>
                   <tbody>
                     @forelse ($data as $d)
                   <tr>
-                    <td>{{ $d->name}}</td>
-                    <td>{{ $d->email}}</td>
-                    <td>{{ $d->role }}</td>
+                    <td>{{ $d->libelle}}</td>
+                    <td>{{ $d->statut}}</td>
+                      <td>{{ $d->type}}</td>
                     <td>{{ $d->direction }}</td>
+                    <td>{{ $d->trimestre->libelle }}</td>
+                    <td>{{ $d->user->lastName." ".$d->name }}</td>
                     <td> 
-            <form action="{{ route('utilisateur.destroy', $d->id) }}" method="POST" onsubmit="return confirm('Etes vous sûr de vouloir supprimer cette ligne ?');">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-sm btn-danger"> <i class="fas fa-trash fa-xs"></i>  </button>
-            </form> 
+                      {{ $d->date_enregistrement }}
                     </td>
                   </tr>
                   @empty
@@ -107,73 +104,7 @@
         </div>
         <!-- /.row -->
       </div>
-      <div class="modal fade" id="addTrimestreModal" tabindex="-1" aria-labelledby="addTrimestreModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addTrimestreModalLabel">    <i class="nav-icon fas fa-user"></i>
-                Nouvel Utilisateur  </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-bs-label="Close"></button>
-            </div>
-            <form id="trimestreForm" method="POST" action="{{ route('utilisateur.store') }}">
-                @csrf
-                <div class="modal-body">
-                   <div class="mb-3">
-                        <label for="name" class="form-label">Nom(s)</label>
-                        <input type="text" id="nom" name="nom" class="form-control"  required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Prénom(s)</label>
-                        <input type="text" id="prenom" name="prenom" class="form-control"  required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Email</label>
-                        <input type="text" id="email" name="email" class="form-control"  required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="role_id" class="form-label">Selectionnez le role </label>
-                        <select id="role" name="role" class="form-control" required>
 
-                        <option value=""></option>
-
-                        @foreach($roles as $s)
-                                <option>{{ $s->name}}</option>
-                            @endforeach
-                            
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="direction_id" class="form-label">Selectionnez la Direction </label>
-                        <select id="direction" name="direction" class="form-control" required>
-                        <option value=""></option>
-                  @foreach($directions as $s)
-                          <option value="{{ $s->code }}">{{ $s->libelle}}</option>
-                   @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success"> <i class="fa fa-plus"></i> Enregistrer</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="sessionModalLabel">
-                    {{ session('status') === 'success' ? 'Success' : 'Erreur' }}
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>{{ session('message') }}</p>
-            </div>
-        </div>
-    </div>
-</div>
       <!-- /.container-fluid -->
     </section>
     <!-- /.content -->
@@ -237,7 +168,7 @@
 <script>
   $(function () {
     $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,"searching":false,
+      "responsive": true, "lengthChange": false, "autoWidth": false,"searching":true,
       "buttons": [ "csv", "excel", "pdf"]
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     

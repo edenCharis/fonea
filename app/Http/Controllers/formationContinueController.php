@@ -18,6 +18,25 @@ class formationContinueController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    
+public function validate(Request $request, $id)
+    {
+        // Find the formation
+        $f = formationContinue::find($id);
+
+        if (!$f) {
+           return redirect()->back()->with('error', 'Record not found.');
+    
+     }
+        
+
+        
+        $f->valide = 1; // or 1 depending on your DB
+        $f->save();
+
+        return redirect()->back()->with('success', 'Record deleted successfully.');
+        }
     public function index()
     {
         //

@@ -8,7 +8,7 @@ class financement extends Model
 {
     //
 
-    protected $fillable = ['nbp','tde_id'];
+    protected $fillable = ['nbp','secteur_id','montant_financement','nbre_emploi_cree','tde_id'];
 
     protected $table = 'details_t_d_e';
     public $timestamps = false;
@@ -16,5 +16,10 @@ class financement extends Model
     public function TechniqueDeveloppementEntrepreunariat(){
 
         return $this->belongsTo(TechniqueDeveloppementEntrepreunariat::class,"tde_id","id");
+    }
+
+      public function secteur(){
+
+        return $this->belongsTo(secteur::class,"secteur_id","id");
     }
 }

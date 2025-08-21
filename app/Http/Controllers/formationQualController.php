@@ -126,6 +126,24 @@ class formationQualController extends Controller
         }
     }
 
+    public function validate(Request $request, $id)
+    {
+        // Find the formation
+        $f = formQual::find($id);
+
+        if (!$f) {
+           return redirect()->back()->with('error', 'Record not found.');
+    
+     }
+        
+
+        
+        $f->valide = 1; // or 1 depending on your DB
+        $f->save();
+
+        return redirect()->back()->with('success', 'Record deleted successfully.');
+        }
+
     /**
      * Display the specified resource.
      */

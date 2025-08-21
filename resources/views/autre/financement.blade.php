@@ -75,9 +75,6 @@
   <i class="fas fa-rocket"></i>
 Réalisations </button>
 
-<button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#add3">
-<i class="fas fa-chart-line"></i>
-Statistiques </button>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -86,8 +83,13 @@ Statistiques </button>
                   <tr>
                     <th>Numéro d'identification</th>
                     <th>Intitulé</th>
+                      <th>Secteur</th>
+
+                     <th>Montant de  financement</th>
+                        <th>Emplois Crées</th>
                     <th>Béneficiaires prévues</th>
                     <th>Béneficiaires  réels</th>
+                    
                   
                     <th>Trimestre</th>
                     <th>Année</th>
@@ -99,10 +101,39 @@ Statistiques </button>
                      <tr>
                     <td>{{ $d->numero_identification}}</td>
                     <td>{{ $d->intitule }}</td>
+                    
                     <td>
                    
                    @foreach ($d->financement as $tde)
-                   <div>{{ $tde->nbp }}</div>
+                
+                       <div>{{ $tde->secteur->libelle }}</div>
+
+                        @endforeach
+                
+                    </td> 
+                             <td>
+                   
+                   @foreach ($d->financement as $tde)
+                       <div>{{ number_format($tde->montant_financement, 0, '.', ' ') }}</div>
+                         @endforeach
+                
+                    </td> 
+                        <td>
+                   
+                   @foreach ($d->financement as $tde)
+                       <div>{{ $tde->nbre_emploi_cree}}</div>
+                       
+                   @endforeach
+                
+                    </td> 
+
+                        <td>
+                   
+                   @foreach ($d->financement as $tde)
+                          <div>{{ $tde->nbp }}</div>
+                      
+                     
+
                    @endforeach
                 
                     </td> 
@@ -113,16 +144,21 @@ Statistiques </button>
                    @endforeach
                 
                     </td> 
+                  
+                      
                     <td>{{ $d->trimestre->libelle}}</td>
                     <td>{{ $d->trimestre->annee->libelle}}</td>
                     <td> 
 
                       
-                    <form action="{{ route('TDE.destroy', $d->id) }}" method="POST" onsubmit="return confirm('Etes-vous sûr de vouloir supprimer cette ligne ?');">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger"> <i class="fas fa-trash fa-xs"></i>  </button>
-            </form> 
+                    <form action="{{ route('TDE.destroy', $d->id) }}" method="POST" class="delete-form">
+    @csrf
+    @method('DELETE')
+    <button type="button" class="btn btn-danger btn-delete" data-id="{{ $d->id }}">
+        <i class="fas fa-trash fa-xs"></i>
+    </button>
+</form>
+
                   </td>
                      </tr>
                   @endforeach
@@ -144,6 +180,26 @@ Statistiques </button>
     </section>
     <!-- /.content -->
   </div>
+
+  <!-- Delete Confirmation Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content border-danger">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="confirmDeleteLabel"><i class="fas fa-exclamation-triangle"></i> Confirmation de suppression</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        Êtes-vous sûr de vouloir supprimer cette ligne ? Cette action est irréversible.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   <div class="modal fade" id="addTrimestreModal" tabindex="-1" aria-labelledby="addTrimestreModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -199,11 +255,33 @@ Statistiques </button>
                             @endforeach
                         </select>
                     </div>
+                      <div class="mb-3">
+                        <label for="secteur_id" class="form-label">Selectionnez le secteur </label>
+                        <select id="secteur_id" name="secteur_id" class="form-select" required>
+                            <option value="" disabled selected></option>
+                            @foreach($secteurs as $s)
+                                <option value="{{ $s->id }}">{{ $s->libelle }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                      <div class="mb-3">  
+                    <label for="nbp" class="form-label">Montant de financement global</label>
+                        
+                        <input type="number" min="1" id="montant_financement" name="montant_financement" class="form-control" placeholder="" required>
+                    </div>
+
+
               
                     <div class="mb-3">  
                     <label for="nbp" class="form-label">Nombre de beneficiaires prévus</label>
                         
                         <input type="number" min="1" id="nbp" name="nbp" class="form-control" placeholder="" required>
+                    </div>
+
+                        <div class="mb-3">  
+                    <label for="nbp" class="form-label">Nombre d'emplois crées</label>
+                        
+                        <input type="number" min="1" id="nbre_emploi_cree" name="nbre_emploi_cree" class="form-control" placeholder="" required>
                     </div>
                    
                    
@@ -228,7 +306,7 @@ Statistiques </button>
                  @csrf
                 <div class="modal-body">
                 <div class="mb-3">
-                <input type="hidden" name="realisationFinancement-" value="realisationFinancement">
+                <input type="hidden" name="realisationFinancement" value="realisationFinancement">
                         <label for="tde_id" class="form-label">Selectionnez l'action de financement TDE</label>
                         <select id="tde_id" name="tde_id" class="form-select" required>
                             <option value="" disabled selected></option>
@@ -276,6 +354,24 @@ Statistiques </button>
 </div>
 
 <script src="plugins/jquery/jquery.min.js"></script>
+<script>
+  let currentForm;
+
+  document.querySelectorAll('.btn-delete').forEach(button => {
+    button.addEventListener('click', function () {
+      currentForm = this.closest('form'); // store the related form
+      const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+      modal.show();
+    });
+  });
+
+  document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+    if (currentForm) {
+      currentForm.submit();
+    }
+  });
+</script>
+
 <!-- jQuery UI 1.11.4 -->
 <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->

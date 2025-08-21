@@ -13,12 +13,17 @@ Route::get('/', function () {
 
 
 
+
 Route::match(['get','post'],'/register',[AuthController::class,'register'])->name("register");
 Route::match(['get','post'],'/login',[AuthController::class,'login'])->name("login");
 Route::get('/logout',[AuthController::class,'logout'])->name("logout");
+Route::put('/updateAccount/{id}',[AuthController::class,'updateAccount'])->name("updateAccount");
+
 
 Route::name("administrateur.")->middleware(CheckDirection::class.':DSIP' )->group(function () { 
     Route::get('administrateur', [AdminController::class,'index'])->name("administrateur")->middleware("auth");
+    Route::get('users', [AdminController::class,'utilisateur'])->name("users")->middleware("auth");
+  
     Route::get('annee', [AdminController::class,'annee'])->name("annee")->middleware("auth");
     Route::get('trimestre', [AdminController::class,'trimestre'])->name("trimestre")->middleware("auth");
     Route::get('secteur', [AdminController::class,'secteur'])->name("secteur")->middleware("auth");
@@ -38,17 +43,18 @@ Route::name("autre.")->middleware("auth")->group(function () {
    
     Route::get('formationContinue', [AutreController::class,'formationContinue'])->name("formationContinue")->middleware(CheckDirection::class.':DE,DSIP',"auth");
     Route::get('ped', [AutreController::class,'ped'])->name("ped")->middleware(CheckDirection::class.':DE,DSIP',"auth");
-    Route::get('compte', [AutreController::class,'compte'])->name("compte")->middleware(CheckDirection::class.':DE,DSIP,DEAP,DA',"auth");
-   
+    Route::get('compte', [AutreController::class,'compte'])->name("compte")->middleware(CheckDirection::class.':DE,DSIP,DEAP,DA,DG',"auth");
+  
     Route::get('tde', [AutreController::class,'tde'])->name("tde")->middleware(CheckDirection::class.':DEAP,DSIP',"auth");
     Route::get('apprentissage', [AutreController::class,'apprentissage'])->name("apprentissage")->middleware(CheckDirection::class.':DA,DSIP');
     Route::get('formation', [AutreController::class,'formation'])->name("formation")->middleware(CheckDirection::class.':DEAP,DSIP');
     Route::get('realisation', [AutreController::class,'realisation'])->name("realisation")->middleware(CheckDirection::class.':DEAP,DSIP');
     Route::get('financement', [AutreController::class,'financement'])->name("financement")->middleware(CheckDirection::class.':DEAP,DSIP');
     Route::get('detailsfq', [ AutreController::class,'detailsfq'])->name("detailsfq")->middleware(CheckDirection::class.':DE,DSIP');
-  });
+   Route::get('detailsFormationContinue', [AutreController::class,'detailsFormationContinue'])
+    ->name("detailsFormationContinue");
+     });
 
-  
 
 Route::middleware("auth")->group(function () {
 
@@ -81,7 +87,7 @@ Route::middleware("auth")->group(function () {
   Route::resource('realisationApprentissage', realisationApprentissageController::class)->middleware(CheckDirection::class.':DA,DSIP');
  
 
-  Route::resource('activites', activitesController::class)->middleware(CheckDirection::class.':DCB');
+  Route::resource('activites', activitesController::class)->middleware(CheckDirection::class.':DCB,DEAP,DSIP,DA,DE');
   Route::resource('journal_activite', journalactivitesController::class)->middleware(CheckDirection::class.':DCB');
   Route::resource('ods', odsController::class)->middleware(CheckDirection::class.':DSIP');
   Route::resource('journal_activite', journalactivitesController::class)->middleware(CheckDirection::class.':DCB');
@@ -93,25 +99,34 @@ Route::middleware("auth")->group(function () {
 
   Route::name( "dg.")->middleware("auth")->group(function () { 
 
-    Route::get('dg', [chartController::class,'index'])->name("dg")->middleware(CheckDirection::class.':DG,DSIP');
-    Route::get('tab1', [dgController::class,'formationQual'])->name("tab1")->middleware(CheckDirection::class.':DSIP,DG,DE');
-    Route::get('tab2', [dgController::class,'formationContinue'])->name("tab2")->middleware(CheckDirection::class.':DSIP,DG');
-    Route::get('tab3', [dgController::class,'tde'])->name("tab3")->middleware(CheckDirection::class.':DSIP,DEAP,DG');
-    Route::get('tab4', [dgController::class,'apprentissage'])->name("apprentissage")->middleware(CheckDirection::class.':DSIP,DG,DA');
-    Route::get('tab5', [dgController::class,'ped'])->name("tab5")->middleware(CheckDirection::class.':DSIP,DG,DE');
-    Route::post('fq.recherche.annee', [chartController::class,'fq_recherche_annee'])->name("fq.recherche.annee")->middleware(CheckDirection::class.':DSIP,DG,DE');
-    Route::get('fq.stat.insertion', [chartController::class,'fq_stat_insertion'])->name("fq.stat.insertion")->middleware(CheckDirection::class.':DSIP,DG,DE');
-    Route::get('fq.stat.insertion', [chartController::class,'fq_stat_insertion'])->name("fq.stat.insertion")->middleware(CheckDirection::class.':DSIP,DG,DE');
-    Route::get('fq.stat.secteur', [chartController::class,'fq_stat_secteur'])->name("fq.stat.secteur")->middleware(CheckDirection::class.':DSIP,DG,DE');
-
-    Route::post('fq.insertion_formation.recherche', [chartController::class,'fq_insertion_formation_recherche'])->name("fq.insertion_formation.recherche")->middleware(CheckDirection::class.':DSIP,DG,DE');
+    Route::get('directeur', [dgController::class,'index'])->name("directeur")->middleware(CheckDirection::class.':DG,DSIP,DE,DEAP,DA');
+    Route::get('planning', [dgController::class,'planning'])->name("planning")->middleware(CheckDirection::class.':DSIP,DG,DE,DA,DEAP');
+    Route::get('validation', [dgController::class,'validation'])->name("validation")->middleware(CheckDirection::class.':DSIP,DG,DE,DA,DEAP');
+    Route::get('rapport', [dgController::class,'rapport'])->name("rapport")->middleware(CheckDirection::class.':DSIP,DG,DE,DA,DEAP');
+   
   
+  });
+
+
+    Route::name( "management.")->middleware("auth")->group(function () { 
+    Route::get('management', [dgController::class,'index'])->name("management")->middleware(CheckDirection::class.':DG,DSIP');
+    Route::get('suivi', [dgController::class,'suivi'])->name("suivi")->middleware(CheckDirection::class.':DG,DSIP');
+    Route::get('programme', [dgController::class,'programme'])->name("programme")->middleware(CheckDirection::class.':DG,DSIP');
+   
    
   });
   
   Route::name( "controle.")->middleware("auth")->group(function () { 
     Route::get('controle', [controleController::class,'index'])->name("controle")->middleware(CheckDirection::class.':DCB');
     Route::get('editer', [controleController::class,'editer'])->name("editer")->middleware(CheckDirection::class.':DCB');
-    Route::get('activite', [controleController::class,'activite'])->name("activite")->middleware(CheckDirection::class.':DCB');
+    Route::get('activite', [controleController::class,'activite'])->name("activite")->middleware(CheckDirection::class.':DCB,DSIP,DA,DE,DEAP');
    
+
+
+    Route::post('/tdevalidate/{id}', [TDEController::class, 'validate'])->name('formation.tdevalidate')->middleware(CheckDirection::class.':DEAP');
+    Route::post('/formqual/{id}', [formationQualController::class, 'validate'])->name('formationqual.validate')->middleware(CheckDirection::class.':DE');
+    Route::post('/formcont/{id}', [formationContinueController::class, 'validate'])->name('formationcont.validate')->middleware(CheckDirection::class.':DE');
+    Route::post('/apprent/{id}', [apprentissageController::class, 'validate'])->name('apprentissage.validate')->middleware(CheckDirection::class.':DA');
+    Route::post('/ped/{id}', [pedController::class, 'validate'])->name('ped.validate')->middleware(CheckDirection::class.':DE');
+  
   });

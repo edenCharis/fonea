@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class detailsTDE extends Model
 {
     //
-    protected $fillable = ['npipi','nipi','npipaf',	'npipai','nipv','metier_id','operateur_formation','secteur_id','tde_id'];
+    protected $fillable = ['npipi','nipi','npipaf',	'npipai','nipv','metier_id','operateur_formation','secteur_id','tde_id', 'nbre_emploi_cree', 'montant_financement', 'npaf'];
 
     protected $table = 'details_t_d_e';
     public $timestamps = false;
@@ -19,7 +19,7 @@ class detailsTDE extends Model
 
     public function metier(){
 
-        return $this->belongsTo(metier::class,"secteur_id","id");
+        return $this->belongsTo(metier::class,"metier_id","id");
     }
     public function secteur(){
 

@@ -1,0 +1,143 @@
+
+    /* Modern Modal Styles */
+    .modern-modal .modal-content {
+      border: none;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(10px);
+    }
+
+    .modern-modal .modal-header {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      border-radius: 20px 20px 0 0;
+    }
+
+    .modern-modal .modal-body {
+      padding: 2rem 1.5rem;
+    }
+
+    .modern-modal .modal-footer {
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      border-radius: 0 0 20px 20px;
+    }
+
+    /* Delete Modal Specific Styles */
+    .delete-modal .modal-header {
+      background: linear-gradient(135deg, #ff6b6b, #ff5252);
+      color: white;
+    }
+
+    .delete-modal .modal-header .btn-close {
+      filter: brightness(0) invert(1);
+    }
+
+    .delete-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #ff6b6b, #ff5252);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Edit Modal Specific Styles */
+    .edit-modal .modal-header {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      color: white;
+    }
+
+    .edit-modal .modal-header .btn-close {
+      filter: brightness(0) invert(1);
+    }
+
+    .edit-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+    }
+
+    /* Form Styles */
+    .form-floating > label {
+      color: #6c757d;
+    }
+
+    .form-floating > .form-control:focus ~ label {
+      color: #0d6efd;
+    }
+
+    .btn-modern {
+      border-radius: 25px;
+      padding: 0.75rem 2rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-modern:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-delete {
+      background: linear-gradient(135deg, #ff6b6b, #ff5252);
+      border: none;
+      color: white;
+    }
+
+    .btn-delete:hover {
+      background: linear-gradient(135deg, #ff5252, #ff1744);
+      color: white;
+    }
+
+    .btn-save {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      border: none;
+      color: white;
+    }
+
+    .btn-save:hover {
+      background: linear-gradient(135deg, #00f2fe, #4facfe);
+      color: white;
+    }
+
+    .action-buttons {
+      gap: 0.5rem;
+    }
+
+    /* Backdrop */
+    .modal-backdrop {
+      backdrop-filter: blur(5px);
+    }
+
+    /* Animation */
+    .modern-modal .modal-dialog {
+      animation: modalSlideIn 0.3s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }

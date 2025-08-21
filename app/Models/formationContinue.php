@@ -17,13 +17,34 @@ class formationContinue extends Model
         return $this->belongsTo(trimestre::class);
    }
 
+    public function user()
+   {
+        return $this->belongsTo(user::class);
+   }
+
    public function secteur()
    {
         return $this->belongsTo(secteur::class);
    }
 
+
+    public function detailsFC(){
+
+     return $this->hasMany(detailsFC::class,"formation_continue_id","id");
+ }
    public function realisationFC(){
 
      return $this->hasMany(realisationFC::class,"formation_continue_id","id");
  }
+
+
+ protected static function boot()
+{
+    parent::boot();
+    
+    static::deleting(function ($record) {
+        // Automatically delete related journal entries
+        JournalActivites::where('libelle', $record->libelle)->delete();
+    });
+}
 }

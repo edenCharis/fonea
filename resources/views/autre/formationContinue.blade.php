@@ -119,7 +119,7 @@ Réalisations </button>
                     <td>{{ $d->trimestre->annee->libelle}}</td>
                  
                     <td> 
-                             <a href="{{ route("autre.detailsfq", ["id" => $d->id])}}" class="btn btn-sm btn-info"> <i class="fa fa-edit"></i> </a>
+                             <a href="{{ route('autre.detailsFormationContinue', ["id" => $d->id])}}" class="btn btn-sm btn-info"> <i class="fa fa-edit"></i> </a>
                              <form action="{{ route('formation_continue.destroy', $d->id) }}" method="POST" onsubmit="return confirm('Etes vous sûr de vouloir supprimer cette ligne ?');">
                 @csrf
                 @method('DELETE')
@@ -128,7 +128,7 @@ Réalisations </button>
                        
                         
          
-                       
+   
                         
                     </td>
                      </tr>

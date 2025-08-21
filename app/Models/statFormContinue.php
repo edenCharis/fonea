@@ -9,7 +9,7 @@ class statFormContinue extends Model
     //
 
     
-    protected $fillable = ['ned','nepc','secteur_id','qualification_id','trimestre_id','competence_id'];
+    protected $fillable = ['ned','nepc','secteur_id','qualification_id','trimestre_id','competence_nom'];
     protected $table = 'stat_form_continue';
     public $timestamps = false;
 

@@ -1,19 +1,19 @@
-<a href="index3.html" class="brand-link">
-      <img src="images/images.png" alt="FONEA Logo" class="brand-image img-circle elevation-3" style="opacity: 10">
-      <span class="brand-text font-weight-light">FONEA</span>
-    </a>
 
-    <!-- Sidebar -->
-    <div class="sidebar" >
-      <!-- Sidebar user (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-        </div>
-        <div class="info">
-          <a href="#" class="d-block">{{ auth()->user()->name }}</a>
-        </div>
-      </div>
+    
+  
+
+<div class="logo-container">
+  <img src="images/logo.png" alt="FONEA Logo" width="100" height="100" class="brand-image">
+</div>
+      
 
       <!-- SidebarSearch Form -->
-     
+      <style>
+.logo-container {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+  height: 60px;           /* Adjust as needed */
+  background-color: #f0f0f0; /* Optional: for visual testing */
+}
+</style> 

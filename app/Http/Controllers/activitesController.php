@@ -28,39 +28,64 @@ class activitesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-
-        $request->validate([
-            'libelle' => 'required|string|max:255',
-            'annee_id' => 'required|exists:annees,id',
-            'direction_id' => 'required|exists:direction,code',
-            'mtb' => 'required'
-
-        ]);
-        $user = $request->user();
-        try {
-
-            activites::create([
-                'libelle' => $request->libelle,
-                'annee_id' => $request->annee_id,
-                'direction'=> $request->direction_id,
-                'user_id'=> $user->id,
-                'statut'=> 'En attente',
-                'mtb' => $request->mtb
-            ]);
-            Log::channel('user_actions')->info('Création', [
-                'user_id' => Auth::id(),
-                'action'  => 'Create Activites',
-                'data'    => $request->all()
-            ]);
-
-            return redirect()->back()->with('status', 'success')->with('message', 'opération effectuée avec succès!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('status', 'error')->with('message', $e->getMessage());
-        }
+   public function store(Request $request)
+{
+   
+    // Get authenticated user
+    $user = Auth::user();
+    if (!$user) {
+        return redirect()->back()
+            ->with('status', 'error')
+            ->with('message', 'Utilisateur non authentifié.');
     }
+
+    try {
+        // Create new activity
+      activites::create([ 
+            'libelle' => $request->libelle,
+            'annee_id' => $request->annee_id,
+            'direction_id' => $request->direction,
+            'user_id' => $user->id,
+            'mtb' => $request->mtb
+        ]);
+
+        // Log the action
+        Log::channel('user_actions')->info('Création d\'activité', [
+            'user_id' => $user->id,
+            'user_name' => $user->name ?? $user->email, // Added user identification
+            'action' => 'Create Activity',
+             'data' => $request->only(['libelle', 'annee_id', 'direction', 'mtb']) // Only log relevant data
+        ]);
+
+        return redirect()->back()
+            ->with('status', 'success')
+            ->with('message', 'Activité créée avec succès!');
+
+    } catch (\Illuminate\Database\QueryException $e) {
+        // Handle database-specific errors
+        Log::channel('user_actions')->error('Erreur de création d\'activité', [
+            'user_id' => $user->id,
+            'error' => $e->getMessage(),
+            'data' => $request->only(['libelle', 'annee_id', 'direction', 'mtb'])
+        ]);
+
+        return redirect()->back()
+            ->with('status', 'error')
+            ->with('message', $e->getMessage());
+
+    } catch (\Exception $e) {
+        // Handle general errors
+        Log::channel('user_actions')->error('Erreur générale', [
+            'user_id' => $user->id,
+            'error' => $e->getMessage(),
+            'data' => $request->only(['libelle', 'annee_id', 'direction', 'mtb'])
+        ]);
+
+        return redirect()->back()
+            ->with('status', 'error')
+            ->with('message', $e->getMessage());
+    }
+}
 
     /**
      * Display the specified resource.
@@ -85,15 +110,6 @@ class activitesController extends Controller
     {
         //           
 
-        $request->validate([
-            'direction' => 'required|exists:direction,code',
-            'annee_id' => 'required|exists:annees,id',
-            'libelle' => 'required|string|max:255',
-            'mtb' => 'required|numeric|min:0',
-            
-        ]);
-    
-       
         $activite = activites::findOrFail($id);
     
       try{
@@ -102,8 +118,7 @@ class activitesController extends Controller
             'annee_id' => $request->annee_id,
             'libelle' => $request->libelle,
             'mtb' => $request->mtb,
-            'taux_realisation' => $request->taux_realisation,
-            'statut' => $request->statut
+            'taux' => $request->taux,
         ]);
     
 

@@ -8,7 +8,7 @@ class activites extends Model
 {
     //
 
-    protected $fillable = ['libelle', 'mtb','direction','taux_realisation','annee_id','user_id','statut'];
+    protected $fillable = ['libelle', 'taux', 'mtb','direction_id','annee_id','user_id','statut'];
 
     public $timestamps = false;
     protected $table = 'activites';

@@ -7,6 +7,7 @@ use App\Models\Annee;
 use App\Models\Direction;
 use Illuminate\Http\Request;
 use App\Models\journalActivites;
+use Illuminate\Support\Facades\Auth;
 
 class controleController extends Controller
 {
@@ -36,10 +37,20 @@ class controleController extends Controller
     public function activite(){
      
       
-       
-        $data = journalActivites::all();
+       if(Auth::user()->Direction->code === "DCB"){
 
-         return view('controle.journal',[ "data" => $data]);
+               $data = journalActivites::all();
+
+             return view('controle.journal',[ "data" => $data]);
+       }else{
+
+          $direction = Auth::user()->Direction->code;
+
+           $data = journalActivites::where("direction",$direction)->get();
+
+         return view('dg.journal',[ "data" => $data]);
+       }
+     
    
 
 

@@ -23,6 +23,11 @@ class metier extends Model
         return $this->hasMany(qualification::class);
     }
 
+     public function formation()
+    {
+        return $this->hasMany(formation::class);
+    }
+
     public function detailsTDE()
     {
         return $this->hasMany(detailsTDE::class);

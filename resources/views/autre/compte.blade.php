@@ -58,7 +58,7 @@
         </div>
       </div>
     </section>
-    <section class="content">
+      <section class="content">
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
@@ -66,7 +66,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Modifier mon profil</h3>
                     </div>
-                    <form action="{{ route('activites.update', $data->id) }}" method="POST">
+                    <form action="{{ route('updateAccount', $data->id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="card-body">
@@ -80,12 +80,35 @@
                                     <input type="email" class="form-control" id="email" name="email" value="{{ $data->email }}" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
+                                  <label for="password" class="form-label">Mot de passe</label>
+                                  <div class="input-group">
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Laisser vide pour ne pas changer" autocomplete="new-password">
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword" tabindex="-1">
+                                      <i class="fa fa-eye" id="togglePasswordIcon"></i>
+                                    </button>
+                                  </div>
+                                  <small class="text-muted">Laissez vide si vous ne souhaitez pas modifier le mot de passe.</small>
+                                </div>
+                                <script>
+                                  document.addEventListener('DOMContentLoaded', function () {
+                                    const passwordInput = document.getElementById('password');
+                                    const togglePassword = document.getElementById('togglePassword');
+                                    const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+                                    togglePassword.addEventListener('click', function () {
+                                      const type = passwordInput.type === 'password' ? 'text' : 'password';
+                                      passwordInput.type = type;
+                                      togglePasswordIcon.classList.toggle('fa-eye');
+                                      togglePasswordIcon.classList.toggle('fa-eye-slash');
+                                    });
+                                  });
+                                </script>
+                                <div class="col-md-6 mb-3">
                                     <label for="libelle">Nom(s)</label>
                                     <input type="text" class="form-control" id="libelle" name="libelle" value="{{ $data->name }}" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="mtb">Prénom(s)</label>
-                                    <input type="number" class="form-control" id="prenom" name="prenom" value="{{ $data->lastName }}" required >
+                                    <input type="text" class="form-control" id="prenom" name="prenom" value="{{ $data->lastName }}" required >
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="taux_realisation">Role</label>
@@ -101,7 +124,7 @@
                         </div>
                         <div class="card-footer">
                             <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Sauvegarder</button>
-                            <a href="{{ route('controle.controle') }}" class="btn btn-secondary"> <i class="fa fa-arrow-left"></i>Retour</a>
+                            <a href="{{ url()->previous() }}" class="btn btn-secondary"> <i class="fa fa-arrow-left"></i> Retour</a>
                         </div>
                     </form>
                 </div>

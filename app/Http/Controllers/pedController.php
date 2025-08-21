@@ -16,6 +16,24 @@ class pedController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    public function validate(Request $request, $id)
+    {
+        // Find the formation
+        $ped = ped::find($id);
+
+        if (!$ped) {
+           return redirect()->back()->with('error', 'Record not found.');
+    
+     }
+        
+
+        
+        $ped->valide = 1; // or 1 depending on your DB
+        $ped->save();
+
+        return redirect()->back()->with('success', 'Record deleted successfully.');
+        }
     public function index()
     {
         //

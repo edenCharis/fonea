@@ -19,4 +19,8 @@ class Annee extends Model
 public function activites(){
     return $this->hasMany(activites::class, "annee_id", "id");
 }
+
+public function journalActivites(){
+    return $this->hasMany(journalActivites::class,"trimestre_id","id");
+  }
 }

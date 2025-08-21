@@ -16,6 +16,10 @@ class formationQual extends Model
     return $this->belongsTo(trimestre::class);
 }
 
+  public function user()
+{
+    return $this->belongsTo(user::class);
+}
 public function detailsFQ(){
 
     return $this->hasMany(detailsFQ::class,"formation_qual_id","id");
@@ -31,6 +35,17 @@ public function stat_formation_qual(){
 public function realisationFQ(){
 
     return $this->hasMany(realisationFQ::class,"formation_qual_id","id");
+}
+
+
+protected static function boot()
+{
+    parent::boot();
+    
+    static::deleting(function ($record) {
+        // Automatically delete related journal entries
+        JournalActivites::where('libelle', $record->libelle)->delete();
+    });
 }
 
 }

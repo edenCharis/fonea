@@ -9,13 +9,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class TechniqueDeveloppementEntrepreunariat extends Model
 {
     //
-    protected $fillable = ['numero_identification', 'intitule','trimestre_id',"type",'user_id'];
+    protected $fillable = ['numero_identification', 'intitule','trimestre_id','type','user_id'];
 
     public $timestamps = false;
     protected $table = 'tde';
   public function trimestre()
 {
     return $this->belongsTo(trimestre::class);
+}
+
+  public function user()
+{
+    return $this->belongsTo(user::class);
 }
 
 public function detailsTDE(): HasMany
@@ -38,6 +43,8 @@ public function realisationTDE(): HasMany
     return $this->hasMany(realisationTDE::class,"tde_id","id");
 }
 
+
+
 public function realisationFormation(): HasMany
 {
     return $this->hasMany(realisationFormation::class,"tde_id","id");
@@ -45,5 +52,15 @@ public function realisationFormation(): HasMany
 public function realisationFinancement(): HasMany
 {
     return $this->hasMany(realisationFinancement::class,"tde_id","id");
+}
+
+protected static function boot()
+{
+    parent::boot();
+    
+    static::deleting(function ($record) {
+        // Automatically delete related journal entries
+        JournalActivites::where('libelle', $record->libelle)->delete();
+    });
 }
 }

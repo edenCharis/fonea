@@ -31,20 +31,12 @@ class realisationFCcontroller extends Controller
      */
     public function store(Request $request)
     {
-        //
-
-        $request->validate([
-            'ned' => 'required|min:1',
-          
-            'formation_continue_id' => 'required|exists:formation_continue,id'
-        ]);
+       
         try {
             realisationFC::create([
                 'formation_continue_id' => $request->formation_continue_id,
                 'ned'=> $request->input("ned"),
-                'nepc' => $request->input("nepc"),
                 'entreprise' => $request->input("entreprise")
-                
             ]);
 
             Log::channel('user_actions')->info('Create', [

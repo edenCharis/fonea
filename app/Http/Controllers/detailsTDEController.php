@@ -40,6 +40,8 @@ class detailsTDEController extends Controller
             $request->validate([
                 'npaf' => 'required|min:1',
                 'tde_id' => 'required|exists:tde,id',
+                'secteur_id' => 'required|exists:secteur,id',
+                'metier_id' => 'required|exists:metier,id',
             ]);
             try {
     
@@ -47,9 +49,17 @@ class detailsTDEController extends Controller
               
                     'tde_id' => $request->input("tde_id"),
                     'npaf' => $request->input("npaf"),
+                      'secteur_id' => $request->input("secteur_id"),
+                        'metier_id' => $request->input("metier_id"),
+                      
                     
                 ]);
     
+                 Log::channel('user_actions')->info('creation', [
+                    'user_id' => Auth::id(),
+                    'action'  => 'CREATE detailsTDE',
+                    'data'    => $request->all()
+                ]);
                 return redirect()
                 ->back()
                 ->with('status', 'success')->with('message', 'opération effectuée avec succès!');
@@ -60,17 +70,29 @@ class detailsTDEController extends Controller
 
         }else if($request->input("financement") == "financement"){
 
-            $request->validate([
+           /* $request->validate([
                 'nbp' => 'required|min:1',
                 'tde_id' => 'required|exists:tde,id',
-            ]);
+                'secteur_id' => 'required|exists:secteur,id', 
+                'montant_financement' => 'required|min:1',
+                'nbre_emploie_cree' => 'required|min:1',
+               
+            ]);*/
             try {
     
                 financement::create([
-              
                     'tde_id' => $request->input("tde_id"),
                     'nbp' => $request->input("nbp"),
+                    'montant_financement'=> $request->input("montant_financement"),
+                    'nbre_emploi_cree'=> $request->input("nbre_emploi_cree"),
+                    'secteur_id'=>$request->input("secteur_id")
                     
+                ]);
+
+                 Log::channel('user_actions')->info('creation', [
+                    'user_id' => Auth::id(),
+                    'action'  => 'CREATE detailsTDE',
+                    'data'    => $request->all()
                 ]);
     
                 return redirect()

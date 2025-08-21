@@ -12,6 +12,43 @@ class AuthController extends Controller
 {
     //
 
+
+   
+public function updateAccount(Request $request, $id)
+{
+    $user = User::findOrFail($id);
+
+    // Validate incoming data
+    $validated = $request->validate([
+        'libelle' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'prenom' => 'required|string|max:255',
+        'password' => 'nullable|string|min:6',
+    ]);
+
+    // Update fields
+    $user->name = $validated['libelle'];
+    $user->lastName = $validated['prenom'];
+    $user->email = $validated['email'];
+
+    // Only update password if provided
+    if (!empty($validated['password'])) {
+        $user->password = Hash::make($validated['password']);
+    }
+
+    $user->save();
+        Log::channel('user_actions')->info('update_profile', [
+            'user_id' => $user->id,
+            'action'  => 'update_profile',
+            'data'    => $request->except('password')
+        ]);
+
+        return redirect()
+            ->back()
+            ->with('success', 'Profil mis à jour avec succès.');
+
+    }
+
     public function register(Request $request){
 
         if($request->isMethod('get')){
@@ -81,16 +118,25 @@ class AuthController extends Controller
                     ]);
                     return redirect()
                         ->route("autre.autre")
-                        ->with("success", "Welcome, Autre!");
-                case 'directeur général':
+                        ->with("success", "welcome");
+                case 'Directeur général':
                     Log::channel('user_actions')->info('connexion', [
                         'user_id' => Auth::id(),
                         'action'  => 'connexion',
                         'data'    => $request->all()
                     ]);
                             return redirect()
-                                ->route("dg.dg")
-                                ->with("success", "Welcome, Autre!");
+                                ->route("management.management")
+                                ->with("success", "welcome");
+                case 'Directeur':
+                    Log::channel('user_actions')->info('connexion', [
+                        'user_id' => Auth::id(),
+                        'action'  => 'connexion',
+                        'data'    => $request->all()
+                    ]);
+                            return redirect()
+                                ->route("dg.directeur")
+                                ->with("success", "welcome");
                 case 'Délégué au Contrôle Budgetaire':
                                     Log::channel('user_actions')->info('connexion', [
                                         'user_id' => Auth::id(),
@@ -99,7 +145,7 @@ class AuthController extends Controller
                                     ]);
                                             return redirect()
                                                 ->route("controle.controle")
-                                                ->with("success", "Welcome, Autre!");
+                                                ->with("success", "welcome");
                               
               
                 default:

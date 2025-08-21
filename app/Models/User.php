@@ -23,6 +23,7 @@ use HasRoles;
 
 
     protected $fillable = [
+      'id',
         'name',
         'lastName',
         'email',
@@ -46,6 +47,42 @@ use HasRoles;
 
     }
 
+     public function journalActivites(){
+        return $this->hasMany(journalActivites::class,"user_id","id");
+      }
+
+       public function TechniqueDeveloppementEntrepreunariat(){
+        return $this->hasMany(TechniqueDeveloppementEntrepreunariat::class,"user_id","id");
+      }
+
+      public function financement(){
+        return $this->hasMany(financement::class,"user_id","id");
+      }
+
+       public function formation(){
+        return $this->hasMany(formation::class,"user_id","id");
+      }
+
+
+       public function formationQual(){
+        return $this->hasMany(formationQual::class,"user_id","id");
+      }
+
+        public function formationContinue(){
+        return $this->hasMany(formationContinue::class,"user_id","id");
+      }
+
+       public function apprentissage(){
+        return $this->hasMany(apprentissage::class,"user_id","id");
+      }
+
+      public function ped(){
+        return $this->hasMany(ped::class,"user_id","id");
+      }
+      
+      
+
+      
     /**
      * Get the attributes that should be cast.
      *

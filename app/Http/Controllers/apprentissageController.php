@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-
+use Carbon\Carbon;
 class apprentissageController extends Controller
 {
     /**
@@ -77,7 +77,8 @@ journalActivites::create([
  "statut" => "Budgetisé",
  "type" => "Apprentissage",
  "direction" => $util->direction,
- "user_id" => Auth::id()
+ "user_id" => Auth::id(),
+ "date_enregistrement"  => Carbon::now(),
 ]);
 
 $record = activites::select("id")
@@ -98,7 +99,8 @@ journalActivites::create([
  "statut" => "Non Budgetisé",
  "type" => "Apprentissage",
  "direction" => $util->direction,
- "user_id" =>Auth::id()
+ "user_id" =>Auth::id(),
+  "date_enregistrement"  => Carbon::now(),
 ]);
 }
 
@@ -144,6 +146,34 @@ journalActivites::create([
     public function update(Request $request, string $id)
     {
         //
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'trimestre_id' => 'required|exists:trimestre,id'
+        ]);
+
+        try {
+            $apprentissage = apprentissage::findOrFail($id);
+
+            $apprentissage->update([
+            'intitule' => $request->name,
+            'trimestre_id' => $request->trimestre_id,
+            'user_id' => Auth::id()
+            ]);
+
+            Log::channel('user_actions')->info('update', [
+            'user_id' => Auth::id(),
+            'action'  => 'UPDATE apprentissage',
+            'data'    => $request->all(),
+            'apprentissage_id' => $id
+            ]);
+
+            return redirect()->back()->with('status', 'success')->with('message', 'Mise à jour effectuée avec succès!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('status', 'error')->with('message', $e->getMessage());
+        }
+
+
     }
 
     /**
@@ -152,5 +182,55 @@ journalActivites::create([
     public function destroy(string $id)
     {
         //
+         try {
+            $record = apprentissage::find($id);
+
+            if (!$record) {
+                return redirect()->back()
+                    ->with('status', 'error')
+                    ->with('message', 'Enregistrement non trouvé.');
+            }
+
+            // Store record data for logging before deletion
+            $recordData = $record->toArray();
+            
+            // Delete the record
+            $record->delete();
+
+            Log::channel('user_actions')->info('Suppression', [
+                'user_id' => Auth::id(),
+                'action' => 'DELETE Apprentissage',
+                'data' => $recordData,
+            ]);
+
+            return redirect()->back()
+                ->with('status', 'success')
+                ->with('message', 'Enregistrement supprimé avec succès.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('status', 'error')
+                ->with('message', $e->getMessage());
+        }
     }
+
+    
+public function validate(Request $request, $id)
+    {
+        // Find the formation
+        $a = apprentissage::find($id);
+
+        if (!$a) {
+           return redirect()->back()->with('error', 'Record not found.');
+    
+     }
+        
+
+        
+        $a->valide = 1; // or 1 depending on your DB
+        $a->save();
+
+        return redirect()->back()->with('success', 'Record deleted successfully.');
+        }
+    
 }

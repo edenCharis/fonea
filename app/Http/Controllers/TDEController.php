@@ -10,6 +10,7 @@ use App\models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 
 class TDEController extends Controller
@@ -70,13 +71,14 @@ class TDEController extends Controller
 
 if($vrai){
 
-journalActivites::create(attributes: [
+journalActivites::create([
  "libelle" => $request->name,
- "trimestre_id" =>$request->trimestre_id,
+ "trimestre_id" =>$request->input("trimestre_id"),
  "statut" => "Budgetisé",
  "type" => "Technique de developpement d'entrepreunariat",
  "direction" => $util->direction,
- "user_id" => Auth::id()
+ "user_id" => Auth::id(),
+'date_enregistrement' => Carbon::now(),
 ]);
 $record = activites::select("id")
 ->whereRaw('LOWER(libelle) = ?', [strtolower($request->name)])
@@ -89,14 +91,33 @@ $activite->update([
    'statut' => "Executé"
 ]);
 
+   TechniqueDeveloppementEntrepreunariat::create([
+                'type' => $request->type,
+
+                'intitule' => $request->name,
+                'trimestre_id' => $request->input("trimestre_id"),
+                'user_id' => Auth::id(),
+                'numero_identification'=> $this->generateSequentialCode()
+            ]);
+
+            Log::channel('user_actions')->info('Create', [
+                'user_id' => Auth::id(),
+                'action'  => 'Create  TDE',
+                'data'    => $request->all()
+            ]);
+            return redirect()->back()->with('status', 'success')->with('message', 'opération effectuée avec succès!');   
+
 }else{
+
+
 journalActivites::create([
  "libelle" => $request->name,
- "trimestre_id" =>$request->trimestre_id,
+ "trimestre_id" =>$request->input("trimestre_id"),
  "statut" => "Non Budgetisé",
  "type" => "Technique de developpement d'entrepreunariat",
  "direction" => $util->direction,
- "user_id" =>Auth::id()
+ "user_id" =>Auth::id(),
+'date_enregistrement' => Carbon::now(),
 ]);
 }
 
@@ -107,7 +128,7 @@ journalActivites::create([
                 'type' => $request->type,
 
                 'intitule' => $request->name,
-                'trimestre_id' => $request->trimestre_id,
+                'trimestre_id' => $request->input("trimestre_id"),
                 'user_id' => Auth::id(),
                 'numero_identification'=> $this->generateSequentialCode()
             ]);
@@ -117,7 +138,6 @@ journalActivites::create([
                 'action'  => 'Create  TDE',
                 'data'    => $request->all()
             ]);
-
             return redirect()->back()->with('status', 'success')->with('message', 'opération effectuée avec succès!');
         } catch (\Exception $e) {
             return redirect()->back()->with('status', 'error')->with('message', $e->getMessage());
@@ -157,13 +177,42 @@ journalActivites::create([
 
         $record = TechniqueDeveloppementEntrepreunariat::find($id);
 
-        if (!$record) {
-            return redirect()->back()->with('error', 'Record not found.');
-        }
-        
-        $record->delete();
+if (!$record) {
+    return redirect()->back()->with('error', 'Record not found.');
+}
+
+
+$journal = journalActivites::whereRaw('LOWER(libelle) = LOWER(?)', [$record->libelle])->first();
+
+// Supprimer le journal s’il existe
+if ($journal) {
+    $journal->delete();
+}
+
+// Supprimer le record principal
+$record->delete();
 
         return redirect()->back()->with('success', 'Record deleted successfully.');
-    }
     
+}
+
+
+public function validate(Request $request, $id)
+    {
+        // Find the formation
+        $tde = TechniqueDeveloppementEntrepreunariat::find($id);
+
+        if (!$tde) {
+           return redirect()->back()->with('error', 'Record not found.');
+    
+     }
+        
+
+        
+        $tde->valide = 1; // or 1 depending on your DB
+        $tde->save();
+
+        return redirect()->back()->with('success', 'Record deleted successfully.');
+        }
+
 }

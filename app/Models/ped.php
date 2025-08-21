@@ -20,6 +20,11 @@ class ped extends Model
     return $this->belongsTo(trimestre::class);
 }
 
+  public function user()
+{
+    return $this->belongsTo(user::class);
+}
+
 public function secteur()
 {
     return $this->belongsTo(secteur::class);
@@ -37,5 +42,16 @@ public function realisationPED(){
     
 }
 
+
+
+protected static function boot()
+{
+    parent::boot();
+    
+    static::deleting(function ($record) {
+        // Automatically delete related journal entries
+        JournalActivites::where('libelle', $record->libelle)->delete();
+    });
+}
 
 }
